@@ -1,6 +1,6 @@
-# CS50-WebProgramming - CS50's Web Programming with Python and JavaScript
+# CS50's Web Programming with Python and JavaScript
 
-CS50-WebProgramming is Harvard University’s introduction to web programming with Python and JavaScript. The course dives more deeply into the design and implementation of web apps with Python, JavaScript, and SQL using frameworks like Django, React, and Bootstrap. Topics include database design, scalability, security, user experience, writing and using APIs, creating interactive UIs, and leveraging cloud services like GitHub and Heroku.
+Harvard University’s introduction to web programming with Python and JavaScript course dives more deeply into the design and implementation of web apps with Python, JavaScript, and SQL using frameworks like Django, React, and Bootstrap. Topics include database design, scalability, security, user experience, writing and using APIs, creating interactive UIs, and leveraging cloud services like GitHub and Heroku.
 
 Assignments and projects completed for CS50-WebProgramming are organized into directories corresponding to the topics below:
 
