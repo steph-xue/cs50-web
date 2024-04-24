@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Search</title>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    </head>
+    <body>
+        <div>
+            <ul class="rightnav">
+                <li><a href="index.html">Google Search</a></li>
+                <li><a href="advanced.html">Advanced Search</a></li>
+            </ul>
+        </div>
+        <div class="center topspace">
+            <img src="googleimageslogo.png" alt="Google Images" height="92">
+        </div>
+        <div class="center">
+            <form action="https://www.google.com/search">
+                <div class="center">
+                    <input type="hidden" name="tbm" value="isch">
+                    <input type="text" class="googleinput" name="q">
+                </div>
+                <div class="center">
+                    <input class="searchbutton" type="submit" value="Google Image">
+                </div>
+            </form>
+        </div>
+    </body>
+</html>
