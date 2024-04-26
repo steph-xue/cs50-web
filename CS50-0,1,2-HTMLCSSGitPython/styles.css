@@ -126,9 +126,8 @@ a:link {
     margin-bottom: 15px;
   }
 
-  .col {
-    margin-left: 50px !important;
-    margin-right: 50px !important;
+  .container {
+    margin-left: 20px !important;
   }
 
   .advancedsearchh1 {
