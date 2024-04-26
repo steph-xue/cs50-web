@@ -181,5 +181,9 @@ a:link {
     white-space: nowrap;
     background-image: -webkit-linear-gradient(top, #4d90fe, #4787ed);
   }
+
+  .advancedbutton:hover {
+    background-image: linear-gradient(#4d90fe, #3b72ca);
+  }
   
 
