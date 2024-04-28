@@ -27,6 +27,37 @@ def entry(request, title):
     else:
         html_content = md_to_html(md_content)
         return render(request, "encyclopedia/entry.html", {
-            "title": title, 
+            "title": title.capitalize(), 
             "content": html_content
         })
+
+
+# Displays the encyclopedia entry page or search results page for the user's search
+def search(request):
+
+    # Gets list of all entries & the user's search
+    entrylist = util.list_entries()
+    search = request.POST["q"]
+
+    # Displays the encyclopedia entry page if the search result matches a valid entry
+    if util.get_entry(search) is not None:
+        md_content = util.get_entry(search)
+        html_content = md_to_html(md_content)
+        return render(request, "encyclopedia/entry.html", {
+            "title": search.capitalize(),
+            "content": html_content
+        })
+    # Otherwise displays the search results page with a list of entries that match the query as a substring
+    else:
+        validentries = []
+        for entry in entrylist:
+            if search.lower() in entry.lower():
+                validentries.append(entry)
+        return render(request, "encyclopedia/search.html", {
+                "entries": validentries
+            })
+    
+    
+
+
+
