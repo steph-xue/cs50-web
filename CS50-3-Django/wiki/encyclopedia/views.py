@@ -57,6 +57,41 @@ def search(request):
                 "entries": validentries
             })
     
+
+# Allows the user to create a new entry page
+def create(request):
+
+    # POST -  User submits the form (title and content) to create a new entry page
+    if request.method == "POST":
+
+        # Gets list of all current entries & the user's title and content for the new entry page
+        entrylist = util.list_entries()
+        title = request.POST["title"].capitalize()
+        md_content = request.POST["content"]
+
+        # If entry already exists, displays an error message
+        if title in entrylist:
+            return render(request, "encyclopedia/error.html", {
+            "message": "Entry already exists"
+        })
+        # If entry does not exist, saves the entry and redirects user to the new entry's page
+        else:
+            util.save_entry(title, md_content)
+            html_content = md_to_html(md_content)
+            return render(request, "encyclopedia/entry.html", {
+                "title": title,
+                "content": html_content
+            })
+
+    # GET - User reaches the create a new entry page
+    else:
+        return render(request, "encyclopedia/create.html")
+        
+
+
+
+    
+    
     
 
 

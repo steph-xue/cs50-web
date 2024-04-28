@@ -13,7 +13,7 @@ h1 {
 }
 
 textarea {
-    height: 90vh;
+    height: 60vh;
     width: 80%;
 }
 
@@ -25,6 +25,7 @@ textarea {
     width: 100%;
     font-size: 15px;
     line-height: 15px;
+    margin-bottom: 10px;
 }
 
 .sidebar {
