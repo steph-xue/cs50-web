@@ -38,3 +38,10 @@ textarea {
     margin-top: 5px;
 }
 
+.button-container {
+    display: flex;
+}
+
+.btn {
+    margin: 2px;
+}

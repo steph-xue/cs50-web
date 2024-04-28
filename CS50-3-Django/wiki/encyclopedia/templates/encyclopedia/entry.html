@@ -8,10 +8,17 @@
 
     <h2>{{ content |safe }}</h2>
     <br>
-    <form action="{% url 'edit' %}" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="title" value="{{ title }}">
-        <input type="submit" value="Edit" class="btn btn-dark">
-    </form>
+    <div class="button-container">
+        <form action="{% url 'edit' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="title" value="{{ title }}">
+            <input type="submit" value="Edit" class="btn btn-dark btn-sm">
+        </form>
+        <form action="{% url 'delete' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="title" value="{{ title }}">
+            <input type="submit" value="Delete" class="btn btn-danger btn-sm">
+        </form>
+    </div>  
 
 {% endblock %}
