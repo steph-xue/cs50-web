@@ -5,18 +5,18 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Create a new encyclopedia entry</h1>
+    <h1>Edit Entry </h1>
 
-   <form action="{% url 'create' %}" method="post">
+   <form action="{% url 'edit' %}" method="post">
     {% csrf_token %}
     <label>Title: </label>
-    <input type="text" name="title">
+    <input type="text" name="title" value="{{ title }}">
     <br>
     <label>Markdown content: </label>
     <br>
-    <textarea name="content"></textarea>
+    <textarea name="content">{{ content }}</textarea>
     <br>
-    <input type="submit" value="Add Entry" class="btn btn-dark">
+    <input type="submit" name="Save" class="btn btn-dark">
    </form>
 
 {% endblock %}

@@ -86,7 +86,35 @@ def create(request):
     # GET - User reaches the create a new entry page
     else:
         return render(request, "encyclopedia/create.html")
+    
+
+# Allows the user start edits for an entry page 
+def edit(request):
+
+    if request.method == "POST":
+        title = request.POST["title"].capitalize()
+        md_content = util.get_entry(title)
+        return render(request, "encyclopedia/edit.html", {
+            "title": title,
+            "content": md_content
+        })
+    
+
+# Allows the user to save edits for an entry page
+def save_edit(request):
+
+    if request.method == "POST":
+        title = request.POST["title"].capitalize()
+        md_content = request.POST["content"]
+
+        util.save_entry(title, md_content)
+        html_content = md_to_html(md_content)
+        return render(request, "encyclopedia/entry.html", {
+            "title": title,
+            "content": html_content
+        })
         
+
 
 
 
