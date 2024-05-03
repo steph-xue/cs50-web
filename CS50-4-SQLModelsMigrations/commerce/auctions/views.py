@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+import datetime
 
 from .models import User, Category, Listing, Comment, Bid
 
@@ -40,6 +41,7 @@ def login_view(request):
     # GET - displays the login page
     else:
         return render(request, "auctions/login.html")
+
 
 # Allows the user to log out
 @login_required(login_url='login')
@@ -87,8 +89,12 @@ def register(request):
 # Allows the user to view a specific auction listing page
 def listing(request, id):
 
-    # Gets the listing item data
+    # Get the current listing and user
     listing_data = Listing.objects.get(pk=id)
+    current_user = request.user
+
+    # Gets all comments for the listing item
+    listing_comments = Comment.objects.filter(listing_item=listing_data, user=current_user)
 
     # Determines if the current user has the listing in their watchlist
     in_watchlist = request.user in listing_data.watchlist.all()
@@ -97,6 +103,7 @@ def listing(request, id):
     {
         "listing": listing_data,
         "in_watchlist": in_watchlist,
+        "comments": listing_comments
     })
 
 
@@ -198,13 +205,13 @@ def category_listing(request):
 
     # Gets all listings within the choosen category
     listings = Listing.objects.filter(category=category_data, is_active=True)
-    
+
     # Redirects user to view listings in the chose category
     return render(request, "auctions/category_listing.html",
     {
         "categories": other_category_data,
         "listings": listings,
-        "category": category_data
+        "category": category_data,
     })
 
 
@@ -219,12 +226,16 @@ def add_watchlist(request, id):
     # Add current user to the watchlist database of the listed item
     listing_data.watchlist.add(current_user)
 
+    # Gets all comments for the listing item
+    listing_comments = Comment.objects.filter(listing_item=listing_data)
+
     # Redirects user to the listing's page
     return render(request, "auctions/listing.html",
     {
         "listing": listing_data,
         "watchlist_alert": f"Added {listing_data.title} to {request.user.username}'s watchlist",
-        "in_watchlist": True
+        "in_watchlist": True,
+        "comments": listing_comments
     })
 
 
@@ -238,13 +249,17 @@ def remove_watchlist(request, id):
 
     # Add current user to the watchlist database of the listed item
     listing_data.watchlist.remove(current_user)
+    
+    # Gets all comments for the listing item
+    listing_comments = Comment.objects.filter(listing_item=listing_data)
 
     # Redirects user to the listing's page
     return render(request, "auctions/listing.html",
     {
         "listing": listing_data,
         "watchlist_alert": f"Removed {listing_data.title} from {request.user.username}'s watchlist",
-        "in_watchlist": False
+        "in_watchlist": False,
+        "comments": listing_comments
     })
 
 
@@ -264,11 +279,60 @@ def watchlist(request):
 
 # Allows the user to add a comment
 @login_required(login_url='login')
-def add_comment(request):
-    pass
+def add_comment(request, id):
+
+    # Get the current listing and user
+    listing_data = Listing.objects.get(pk=id)
+    current_user = request.user
+
+    # Get the added comment
+    comment = request.POST.get("comment", None)
+
+    # Determines if the current user has the listing in their watchlist
+    in_watchlist = request.user in listing_data.watchlist.all()
+
+    # Gets all comments for the listing item
+    listing_comments = Comment.objects.filter(listing_item=listing_data, user=current_user)
+
+    # Displays error message if no comment added
+    if not comment:
+        return render(request, "auctions/listing.html",
+        {
+            "listing": listing_data,
+            "in_watchlist": in_watchlist,
+            "comments": listing_comments,
+            "comment_alert": "No comment was added"
+        })
+
+    # Get the date and time the comment was added
+    date_time=datetime.datetime.now()
+
+    # Create a new comment object for the listing item
+    new_comment = Comment(
+        text=comment,
+        date_time=date_time,
+        listing_item=listing_data,
+        user=current_user
+    )
+
+    # Save the comment into the database
+    new_comment.save()
+
+    # Redirects user back to the listing's page
+    return HttpResponseRedirect(reverse("listing", args=(id,)))
+
 
 # Allows the user to delete their own comments
 @login_required(login_url='login')
-def delete_comment(request):
-    pass
+def delete_comment(request, id):
+
+    # Get the selected comment
+    comment_id = request.POST["delete_comment"]
+    comment_data = Comment.objects.get(pk=comment_id)
+
+    # Delete the selected comment
+    comment_data.delete()
+
+    # Redirects user back to the listing's page
+    return HttpResponseRedirect(reverse("listing", args=(id,)))
 

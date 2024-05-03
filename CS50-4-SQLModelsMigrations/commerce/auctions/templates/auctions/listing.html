@@ -8,6 +8,12 @@
         </div>
     {% endif %}
 
+    {% if comment_alert %}
+        <div class="alert alert-danger" role="alert">
+            {{ comment_alert }}
+        </div>
+    {% endif %}
+
     <div class="text-center">
         <h2>{{ listing.title }}</h2>
         <img src="{{ listing.image_url }}" alt="{{ listing.title }}" height="400px">
@@ -19,7 +25,6 @@
 
 
     {% if user.is_authenticated %}
-
         {% if not in_watchlist %}
             <form class="text-center" action="{% url 'add_watchlist' id=listing.id %}" action="post">
                 {% csrf_token %}
@@ -33,7 +38,6 @@
                 <button type="submit" class="btn btn-outline-dark">Remove from Watchlist</button>
             </form>
         {% endif %}
-
     {% endif %}
     <br>
     <br>
@@ -45,12 +49,33 @@
         {% if comments %}
             <ul class="list-group list-group-flush">
                 {% for comment in comments %}
-                    <li class="list-group-item">{{ comment }}</li>
+                    <li class="list-group-item p-4 row">
+                        <p>{{ comment.text }}</p>
+                        <p><small><i>Commented by: {{ comment.user.username }} ({{ comment.date_time }})</i></small></p>
+                        {% if request.user == comment.user %}
+                            <form action="{% url 'delete_comment' id=listing.id %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="delete_comment" value="{{ comment.id }}">
+                                <button type="submit" class="btn btn-sm btn-outline-dark ml-2">Delete Comment</button>
+                            </form>
+                        {% endif %}
+                    </li>
                 {% endfor %}
             </ul>
         {% else %}
-            <p>No comments</p>
+            <p class="p-3">No comments</p>
         {% endif %}
-      </div>
+    </div>
+
+    <br>
+
+    {% if user.is_authenticated %}
+        <form class="text-center" action="{% url 'add_comment' id=listing.id %}" method="post">
+            {% csrf_token %}
+            <label><strong>Add Comment: </strong></label>
+            <input class="col-9 ml-2" type="text" name="comment">
+            <button type="submit" class="btn btn-dark ml-2">Add Comment</button>
+        </form>
+    {% endif %}
 
 {% endblock %}
