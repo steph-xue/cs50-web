@@ -86,12 +86,12 @@ def register(request):
 
 # Allows the user to view a specific auction listing page
 def listing(request, id):
-    
+
     # Gets the listing item data
     listing_data = Listing.objects.get(pk=id)
 
     # Determines if the current user has the listing in their watchlist
-    in_watchlist = current_user in listing_data.watchlist.all()
+    in_watchlist = request.user in listing_data.watchlist.all()
 
     return render(request, "auctions/listing.html",
     {
@@ -117,6 +117,14 @@ def create(request):
         price = float(request.POST["price"])
         category = request.POST["category"]
         owner = request.user
+
+        # If a mandatory field is not filled out, display an error message
+        if not title or not description or not price or not category:
+            return render(request, "auctions/create.html",
+            {
+                "message": "Missing information: Please fill out all fields",
+                "categories": all_categories
+            })
 
         # Get the category object data
         category_data = Category.objects.get(category_name=category)
@@ -168,10 +176,22 @@ def category(request):
 
 # Allows the user to submit a chosen category and view corresponding listings
 def category_listing(request):
+
+    # Gets all categories avaliable 
+    all_categories = Category.objects.all()
+
+    # If no category is selected, displays an error message
+    if not request.POST.get("category", None):
+        return render(request, "auctions/category.html",
+        {
+            "categories": all_categories,
+            "message": "Please select a valid category"
+        })
         
     # Retrieves the category selected 
-    category = request.POST["category"]
+    category = request.POST.get("category", None)
     category_data = Category.objects.get(category_name=category)
+
 
     # Retrieves the other categories (others to choose from)
     other_category_data = Category.objects.exclude(category_name=category)
@@ -199,15 +219,12 @@ def add_watchlist(request, id):
     # Add current user to the watchlist database of the listed item
     listing_data.watchlist.add(current_user)
 
-    # Determines if the current user has the listing in their watchlist
-    in_watchlist = current_user in listing_data.watchlist.all()
-
     # Redirects user to the listing's page
     return render(request, "auctions/listing.html",
     {
         "listing": listing_data,
-        "alert": f"Added {listing_data.title} to {request.user.username}'s watchlist",
-        "in_watchlist": in_watchlist
+        "watchlist_alert": f"Added {listing_data.title} to {request.user.username}'s watchlist",
+        "in_watchlist": True
     })
 
 
@@ -222,20 +239,26 @@ def remove_watchlist(request, id):
     # Add current user to the watchlist database of the listed item
     listing_data.watchlist.remove(current_user)
 
-    # Determines if the current user has the listing in their watchlist
-    in_watchlist = current_user in listing_data.watchlist.all()
-
     # Redirects user to the listing's page
     return render(request, "auctions/listing.html",
     {
         "listing": listing_data,
-        "alert": f"Removed {listing_data.title} to {request.user.username}'s watchlist",
-        "in_watchlist": in_watchlist
+        "watchlist_alert": f"Removed {listing_data.title} from {request.user.username}'s watchlist",
+        "in_watchlist": False
     })
 
 
 # Allows the user to view their watchlist
 @login_required(login_url='login')
 def watchlist(request):
-     pass
+
+    # Gets all listings in the current user's watchlist
+     current_user = request.user
+     watchlist_data = current_user.user_watchlist.all()
+
+    # Displays the user's watchlist 
+     return render(request, "auctions/watchlist.html",
+    {
+        "listings": watchlist_data,
+    })
 

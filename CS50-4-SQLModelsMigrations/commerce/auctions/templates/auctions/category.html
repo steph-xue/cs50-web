@@ -2,9 +2,17 @@
 
 {% block body %}
 
-    <h2>View By Category</h2>
+    {% if message %}
+        <div class="alert alert-danger" role="alert">
+            {{ message }}
+        </div>
+    {% endif %}
 
-    <form action="{% url 'category_listing' %}" method="post">
+    <h2 class="text-center">View By Category</h2>
+
+    <br>
+
+    <form action="{% url 'category_listing' %}" method="post" class="col-4 offset-4">
         {% csrf_token %}
         <div class="form-group">
             <label>Category: </label>
@@ -15,7 +23,9 @@
                 {% endfor %}
             </select>
           </div>
-        <input class="btn btn-dark" type="submit" value="View Listings">
+        <div class="text-center">
+            <input class="btn btn-dark" type="submit" value="View Listings">
+        </div>
     </form>
     
 {% endblock %}

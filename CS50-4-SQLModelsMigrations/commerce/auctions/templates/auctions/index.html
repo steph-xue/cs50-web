@@ -2,11 +2,12 @@
 
 {% block body %}
 
-    <h2>Active Listings</h2>
+    <h2 class="text-center">Active Listings</h2>
+    <br>
 
-    <div class="row">
+    <div class="row text-center">
         {% for listing in listings %}
-        <div class="card" style="width: 20rem;">
+        <div class="card text-center mx-auto" style="width: 20rem;">
             <img class="card-img-top" src="{{ listing.image_url }}" alt="{{ listing.title }}">
             <div class="card-body">
               <h4 class="card-title">{{ listing.title }}</h4>
@@ -19,5 +20,5 @@
         </div>
         {% endfor %}
     </div>
-    
+
 {% endblock %}
