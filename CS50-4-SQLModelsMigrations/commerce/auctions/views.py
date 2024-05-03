@@ -94,10 +94,10 @@ def listing(request, id):
     current_user = request.user
 
     # Gets all comments for the listing item
-    listing_comments = Comment.objects.filter(listing_item=listing_data, user=current_user)
+    listing_comments = Comment.objects.filter(listing_item=listing_data)
 
     # Determines if the current user has the listing in their watchlist
-    in_watchlist = request.user in listing_data.watchlist.all()
+    in_watchlist = current_user in listing_data.watchlist.all()
 
     return render(request, "auctions/listing.html",
     {
@@ -289,10 +289,10 @@ def add_comment(request, id):
     comment = request.POST.get("comment", None)
 
     # Determines if the current user has the listing in their watchlist
-    in_watchlist = request.user in listing_data.watchlist.all()
+    in_watchlist = current_user in listing_data.watchlist.all()
 
     # Gets all comments for the listing item
-    listing_comments = Comment.objects.filter(listing_item=listing_data, user=current_user)
+    listing_comments = Comment.objects.filter(listing_item=listing_data)
 
     # Displays error message if no comment added
     if not comment:
