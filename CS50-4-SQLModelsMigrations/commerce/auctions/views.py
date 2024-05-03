@@ -86,10 +86,17 @@ def register(request):
 
 # Allows the user to view a specific auction listing page
 def listing(request, id):
+    
+    # Gets the listing item data
     listing_data = Listing.objects.get(pk=id)
+
+    # Determines if the current user has the listing in their watchlist
+    in_watchlist = current_user in listing_data.watchlist.all()
+
     return render(request, "auctions/listing.html",
     {
-        "listing": listing_data
+        "listing": listing_data,
+        "in_watchlist": in_watchlist,
     })
 
 
@@ -136,10 +143,7 @@ def create(request):
         listing_data.save()
         
         # Redirects user to the new listing's page
-        return render(request, "auctions/listing.html",
-        {
-            "listing": listing_data
-        })
+        return HttpResponseRedirect(reverse("listing", args=(listing_data.id,)))
 
     # GET - displays the page to create a new listing
     else:
@@ -165,21 +169,73 @@ def category(request):
 # Allows the user to submit a chosen category and view corresponding listings
 def category_listing(request):
         
-        # Retrieves the category selected 
-        category = request.POST["category"]
-        category_data = Category.objects.get(category_name=category)
+    # Retrieves the category selected 
+    category = request.POST["category"]
+    category_data = Category.objects.get(category_name=category)
 
-        # Retrieves the other categories (others to choose from)
-        other_category_data = Category.objects.exclude(category_name=category)
+    # Retrieves the other categories (others to choose from)
+    other_category_data = Category.objects.exclude(category_name=category)
 
-        # Gets all listings within the choosen category
-        listings = Listing.objects.filter(category=category_data, is_active=True)
-        
-        # Redirects user to view listings in the chose category
-        return render(request, "auctions/category_listing.html",
-        {
-            "categories": other_category_data,
-            "listings": listings,
-            "category": category_data
-        })
+    # Gets all listings within the choosen category
+    listings = Listing.objects.filter(category=category_data, is_active=True)
+    
+    # Redirects user to view listings in the chose category
+    return render(request, "auctions/category_listing.html",
+    {
+        "categories": other_category_data,
+        "listings": listings,
+        "category": category_data
+    })
+
+
+# Allows the user to add a listing to their watchlist
+@login_required(login_url='login')
+def add_watchlist(request, id):
+    
+    # Get the current listing and user
+    listing_data = Listing.objects.get(pk=id)
+    current_user = request.user
+
+    # Add current user to the watchlist database of the listed item
+    listing_data.watchlist.add(current_user)
+
+    # Determines if the current user has the listing in their watchlist
+    in_watchlist = current_user in listing_data.watchlist.all()
+
+    # Redirects user to the listing's page
+    return render(request, "auctions/listing.html",
+    {
+        "listing": listing_data,
+        "alert": f"Added {listing_data.title} to {request.user.username}'s watchlist",
+        "in_watchlist": in_watchlist
+    })
+
+
+# Allows the user to remove a listing from their watchlist
+@login_required(login_url='login')
+def remove_watchlist(request, id):
+    
+    # Get the current listing and user
+    listing_data = Listing.objects.get(pk=id)
+    current_user = request.user
+
+    # Add current user to the watchlist database of the listed item
+    listing_data.watchlist.remove(current_user)
+
+    # Determines if the current user has the listing in their watchlist
+    in_watchlist = current_user in listing_data.watchlist.all()
+
+    # Redirects user to the listing's page
+    return render(request, "auctions/listing.html",
+    {
+        "listing": listing_data,
+        "alert": f"Removed {listing_data.title} to {request.user.username}'s watchlist",
+        "in_watchlist": in_watchlist
+    })
+
+
+# Allows the user to view their watchlist
+@login_required(login_url='login')
+def watchlist(request):
+     pass
 

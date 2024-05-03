@@ -15,7 +15,7 @@ class Category(models.Model):
         return self.category_name
 
 
-# Model for auction listings database (title, description, image url, current price, category, owner of the posting)
+# Model for auction listings database (title, description, image url, current price, category, in which users watchlists, owner of the posting)
 class Listing(models.Model):
     title = models.CharField(max_length=30)
     description = models.CharField(max_length=300)
@@ -23,6 +23,7 @@ class Listing(models.Model):
     price = models.FloatField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True, related_name="listing_category")
     is_active = models.BooleanField(default=True)
+    watchlist = models.ManyToManyField(User, blank=True, null=True, related_name="user_watchlist")
     owner = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="listing_user")
 
     def __str__(self):
