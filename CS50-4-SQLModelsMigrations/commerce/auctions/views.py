@@ -262,3 +262,13 @@ def watchlist(request):
         "listings": watchlist_data,
     })
 
+# Allows the user to add a comment
+@login_required(login_url='login')
+def add_comment(request):
+    pass
+
+# Allows the user to delete their own comments
+@login_required(login_url='login')
+def delete_comment(request):
+    pass
+
