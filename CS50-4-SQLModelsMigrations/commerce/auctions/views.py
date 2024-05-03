@@ -149,6 +149,37 @@ def create(request):
         })
     
 
-# Allows the user to view listings in different categories
+# Allows the user to select from different categories to view
 def category(request):
-    pass
+
+    # Gets all categories avaliable 
+    all_categories = Category.objects.all()
+
+    # Shows user page to select from all categories avaliable
+    return render(request, "auctions/category.html",
+        {
+            "categories": all_categories
+        })
+
+
+# Allows the user to submit a chosen category and view corresponding listings
+def category_listing(request):
+        
+        # Retrieves the category selected 
+        category = request.POST["category"]
+        category_data = Category.objects.get(category_name=category)
+
+        # Retrieves the other categories (others to choose from)
+        other_category_data = Category.objects.exclude(category_name=category)
+
+        # Gets all listings within the choosen category
+        listings = Listing.objects.filter(category=category_data, is_active=True)
+        
+        # Redirects user to view listings in the chose category
+        return render(request, "auctions/category_listing.html",
+        {
+            "categories": other_category_data,
+            "listings": listings,
+            "category": category_data
+        })
+
