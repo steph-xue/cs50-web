@@ -15,16 +15,34 @@
     {% endif %}
 
     <div class="text-center">
-        <h2>{{ listing.title }}</h2>
-        <img src="{{ listing.image_url }}" alt="{{ listing.title }}" height="400px">
+        <h1 class="m-3">{{ listing.title }}</h1>
+        <img src="{{ listing.image_url }}" alt="{{ listing.title }}" height="300px" class="m-3">
         <p><strong>Description:</strong> {{ listing.description }}</p>
         <p><strong>Current Price: </strong>${{ listing.price|floatformat:2 }}</p>
         <p><strong>Category:</strong> {{ listing.category }}</p>
         <p><strong>Listing Owner: </strong>{{ listing.owner }}</p>
     </div>
+    <hr>
 
 
     {% if user.is_authenticated %}
+
+        <form action="{% url 'add_bid' id=listing.id %}" method="post" class="col-4 offset-4">
+            {% csrf_token %}
+            <div class="form-group text-center">
+                <label class="biggerfont" ><strong>Add a Bid: </strong></label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">$</span>
+                    </div>
+                    <input class="form-control" type="number" name="bid" placeholder="Enter a bid" min="0"/>
+                    <button type="submit" class="btn btn-brown mx-2">Add Bid</button>
+                </div>
+            </div>
+        </form>
+
+        <br>
+
         {% if not in_watchlist %}
             <form class="text-center" action="{% url 'add_watchlist' id=listing.id %}" action="post">
                 {% csrf_token %}
@@ -38,6 +56,7 @@
                 <button type="submit" class="btn btn-brown">Remove from Watchlist</button>
             </form>
         {% endif %}
+
     {% endif %}
     <br>
     <br>

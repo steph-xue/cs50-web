@@ -17,7 +17,7 @@ class Category(models.Model):
 
 # Model for bid database (bid price, listing item, user who made the bid)
 class Bid(models.Model):
-    bid = models.FloatField()
+    bid = models.FloatField(default=None)
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="bid_user")
 
     def __str__(self):
@@ -30,7 +30,7 @@ class Listing(models.Model):
     description = models.CharField(max_length=300)
     image_url = models.CharField(max_length=300)
     initial_price = models.FloatField(),
-    current_highest_bid = models.ForeignKey(Bid, on_delete=models.CASCADE, blank=True, null=True, related_name="listing_bid")
+    current_highest_bid = models.ForeignKey(Bid, on_delete=models.CASCADE, blank=True, null=True, related_name="listing_bid", default=None)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True, related_name="listing_category")
     is_active = models.BooleanField(default=True)
     watchlist = models.ManyToManyField(User, blank=True, null=True, related_name="user_watchlist")

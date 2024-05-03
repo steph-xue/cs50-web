@@ -121,12 +121,12 @@ def create(request):
         title = request.POST["title"]
         description = request.POST["description"]
         image_url = request.POST["image_url"]
-        price = float(request.POST["price"])
+        initial_price = float(request.POST["initial_price"])
         category = request.POST["category"]
         owner = request.user
 
         # If a mandatory field is not filled out, display an error message
-        if not title or not description or not price or not category:
+        if not title or not description or not initial_price or not category:
             return render(request, "auctions/create.html",
             {
                 "message": "Missing information: Please fill out all fields",
@@ -137,7 +137,7 @@ def create(request):
         category_data = Category.objects.get(category_name=category)
 
         # Returns an error message if the price is not a positive value
-        if price <= 0:
+        if initial_price <= 0:
             return render(request, "auctions/create.html",
         {
             "message": "Error: Price must be a positive value",
@@ -149,7 +149,7 @@ def create(request):
             title=title,
             description=description,
             image_url=image_url,
-            price=price,
+            initial_price=initial_price,
             category=category_data,
             owner=owner
         )

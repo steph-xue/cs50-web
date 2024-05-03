@@ -8,6 +8,10 @@ body {
     color: rgb(106, 59, 39)
 }
 
+.biggerfont {
+    font-size: 18px;
+}
+
 #navid {
     background-color: #ECE2DA;
 }

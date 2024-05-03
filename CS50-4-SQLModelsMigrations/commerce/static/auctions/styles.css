@@ -3,6 +3,23 @@ body {
 }
 
 .strongfont {
-    font-size: 100px;
+    font-size: 80px;
     font-weight: bold;
+    color: rgb(106, 59, 39)
+}
+
+.biggerfont {
+    font-size: 100px;
+}
+
+#navid {
+    background-color: #ECE2DA;
+}
+
+.btn-brown {
+    background-color: #ECE2DA !important;
+}
+
+.btn-brown:hover {
+    background-color: #dec7b2!important;
 }
