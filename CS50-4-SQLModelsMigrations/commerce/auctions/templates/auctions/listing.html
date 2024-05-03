@@ -29,13 +29,13 @@
             <form class="text-center" action="{% url 'add_watchlist' id=listing.id %}" action="post">
                 {% csrf_token %}
                 <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                <button type="submit" class="btn btn-dark">Add to Watchlist</button>
+                <button type="submit" class="btn btn-brown">Add to Watchlist</button>
             </form>
         {% else %}
             <form class="text-center" action="{% url 'remove_watchlist' id=listing.id %}" action="post">
                 {% csrf_token %}
                 <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                <button type="submit" class="btn btn-outline-dark">Remove from Watchlist</button>
+                <button type="submit" class="btn btn-brown">Remove from Watchlist</button>
             </form>
         {% endif %}
     {% endif %}
@@ -56,7 +56,7 @@
                             <form action="{% url 'delete_comment' id=listing.id %}" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="delete_comment" value="{{ comment.id }}">
-                                <button type="submit" class="btn btn-sm btn-outline-dark ml-2">Delete Comment</button>
+                                <button type="submit" class="btn btn-sm btn-brown ml-2">Delete Comment</button>
                             </form>
                         {% endif %}
                     </li>
@@ -74,7 +74,7 @@
             {% csrf_token %}
             <label><strong>Add Comment: </strong></label>
             <input class="col-9 ml-2" type="text" name="comment">
-            <button type="submit" class="btn btn-dark ml-2">Add Comment</button>
+            <button type="submit" class="btn btn-brown ml-2">Add Comment</button>
         </form>
     {% endif %}
 

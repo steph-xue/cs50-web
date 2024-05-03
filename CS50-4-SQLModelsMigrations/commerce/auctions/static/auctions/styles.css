@@ -7,3 +7,15 @@ body {
     font-weight: bold;
     color: rgb(106, 59, 39)
 }
+
+#navid {
+    background-color: #ECE2DA;
+}
+
+.btn-brown {
+    background-color: #ECE2DA !important;
+}
+
+.btn-brown:hover {
+    background-color: #dec7b2!important;
+}
