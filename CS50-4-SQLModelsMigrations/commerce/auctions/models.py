@@ -31,7 +31,9 @@ class Listing(models.Model):
         return self.title
 
 class Comment(models.Model):
-    pass
+    comment = models.CharField(max_length=300)
+    date_time = models.DateTimeField(default=datetime.datetime.now())
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="comment_user")
 
 class Bid(models.Model):
     pass
