@@ -8,12 +8,20 @@
     <div class="row text-center">
         {% for listing in listings %}
         <div class="card text-center mx-auto" style="width: 20rem;">
-            <img class="card-img-top" src="{{ listing.image_url }}" alt="{{ listing.title }}">
+            <img class="card-img-top m-10" src="{{ listing.image_url }}" alt="{{ listing.title }}">
             <div class="card-body">
-              <h4 class="card-title">{{ listing.title }}</h4>
-              <p class="card-text">{{ listing.description }}</p>
-              <br>
-              <h6 class="card-text">Current Price: $ {{ listing.price|floatformat:2 }}</h6>
+                <h4 class="card-title">{{ listing.title }}</h4>
+                <p class="card-text">{{ listing.description }}</p>
+                <br>
+                <h6 class="card-text">Starting Price: $ {{ listing.initial_price|floatformat:2 }}</h6>
+                <h6 class="card-text">
+                    Bidding Price: 
+                    {% if listing.current_highest_bid %}
+                        $ {{ listing.current_highest_bid.bid|floatformat:2 }} made by {{ listing.current_highest_bid.user.username }}
+                    {% else %}
+                        No bids made yet
+                    {% endif %}
+                </h6>
               <br>
               <a href="{% url 'listing' id=listing.id %}" class="btn btn-brown">See details</a>
             </div>

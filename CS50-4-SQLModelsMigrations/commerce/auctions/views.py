@@ -302,7 +302,7 @@ def add_comment(request, id):
             "listing": listing_data,
             "in_watchlist": in_watchlist,
             "comments": listing_comments,
-            "comment_alert": "No comment was added"
+            "comment_red_alert": "Error: No comment was added"
         })
 
     # Get the date and time the comment was added
@@ -338,15 +338,83 @@ def delete_comment(request, id):
     return HttpResponseRedirect(reverse("listing", args=(id,)))
 
 
-# Allows the user to view their list of bids
+# Allows the user to view their bidding list (listings where they hold the highest bid)
 @login_required(login_url='login')
 def bidlist(request):
-    pass
+     
+    # Gets all listings in the current user's bidding list 
+     current_user = request.user
+     bidlist_data = current_user.bid_user.all()
+
+    # Displays the user's bidding list
+     return render(request, "auctions/bidlist.html",
+    {
+        "listings": bidlist_data,
+    })
 
 
 # Allows the user to bid for a listing
 @login_required(login_url='login')
 def add_bid(request, id):
-    pass
+
+    # Get the current listing and user
+    listing_data = Listing.objects.get(pk=id)
+    current_user = request.user
+
+    # Get the added bid amount
+    bid = request.POST.get("bid", None)
+
+    # Determines if the current user has the listing in their watchlist
+    in_watchlist = current_user in listing_data.watchlist.all()
+
+    # Gets all comments for the listing item
+    listing_comments = Comment.objects.filter(listing_item=listing_data)
+
+    # Displays error message if no bid was added
+    if not bid:
+        return render(request, "auctions/listing.html",
+        {
+            "listing": listing_data,
+            "in_watchlist": in_watchlist,
+            "comments": listing_comments,
+            "comment_red_alert": "Error: No bid was added"
+        })
+
+    # Check to see if the added bid is greater than the current highest bidding price before adding to the database
+    # Return an error if the bid is lower than the current highest bidding price
+    bid = float(bid)
+    if bid <= listing_data.current_highest_bid.bid:
+        return render(request, "auctions/listing.html",
+        {
+            "listing": listing_data,
+            "in_watchlist": in_watchlist,
+            "comments": listing_comments,
+            "comment_red_alert": "Error: Bid is lower than or equal to that of the current highest bidding price"
+        })
+    
+    # Create a new bid object and update the highest bid for the listing if bid is greater than the current highest bidding price
+    else:
+
+        # Create a new bid object
+        new_bid = Bid(
+            bid=bid,
+            user=current_user
+        )
+
+        # Save the bid into the database
+        new_bid.save()
+
+        # Add the newly added highest bid to the listing's highest bid field
+        listing_data.current_highest_bid = new_bid
+        listing_data.save()
+
+        # Redirects user back to the listing's page with a success message
+        return render(request, "auctions/listing.html",
+            {
+                "listing": listing_data,
+                "in_watchlist": in_watchlist,
+                "comments": listing_comments,
+                "comment_green_alert": f"Bid of {newbid.bid} was added successfully"
+            })
 
 

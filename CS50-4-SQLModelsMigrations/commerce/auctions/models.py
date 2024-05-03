@@ -26,10 +26,10 @@ class Bid(models.Model):
 
 # Model for auction listings database (title, description, image url, current price, category, in which users watchlists, owner of the posting)
 class Listing(models.Model):
-    title = models.CharField(max_length=30)
-    description = models.CharField(max_length=300)
-    image_url = models.CharField(max_length=300)
-    initial_price = models.FloatField(),
+    title = models.CharField(max_length=30, default=None)
+    description = models.CharField(max_length=300, default=None)
+    image_url = models.CharField(max_length=300, default=None)
+    initial_price = models.FloatField(default=None)
     current_highest_bid = models.ForeignKey(Bid, on_delete=models.CASCADE, blank=True, null=True, related_name="listing_bid", default=None)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True, related_name="listing_category")
     is_active = models.BooleanField(default=True)
@@ -39,7 +39,7 @@ class Listing(models.Model):
     def __str__(self):
         return self.title
     
-
+    
 # Model for comment database (comment, date and time, listing item, and user who made the comment)
 class Comment(models.Model):
     text = models.CharField(max_length=300)
@@ -49,6 +49,7 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.text} commented by {self.user} on {self.listing_item}"
+    
 
 
 

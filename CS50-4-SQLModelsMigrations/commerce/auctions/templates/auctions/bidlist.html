@@ -4,7 +4,9 @@
 
     {% if user.is_authenticated %}
 
-        <h2 class="text-center">Watchlist</h2>
+        <h2 class="text-center">Bidding list</h2>
+
+        <p><i>Only active listings where you hold the highest bid are listed</i></p>
 
         {% if listings %}
             <div class="row text-center">
@@ -26,19 +28,13 @@
                         </h6>
                         <br>
                         <a href="{% url 'listing' id=listing.id %}" class="btn btn-brown">See details</a>
-                        <br><br>
-                        <form class="text-center" action="{% url 'remove_watchlist' id=listing.id %}" action="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                            <button type="submit" class="btn btn-brown">Remove from Watchlist</button>
-                        </form>
                     </div>
                 </div>
                 {% endfor %}
             </div>
         {% else %}
             <br>
-            <p class="text-center">No items currently in the watchlist</p>
+            <p class="text-center">No items currently in the Bidding list</p>
         {% endif %}
 
     {% endif %}

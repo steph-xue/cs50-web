@@ -8,19 +8,34 @@
         </div>
     {% endif %}
 
-    {% if comment_alert %}
+    {% if comment_red_alert %}
         <div class="alert alert-danger" role="alert">
-            {{ comment_alert }}
+            {{ comment_red_alert }}
+        </div>
+    {% endif %}
+
+    {% if comment_green_alert %}
+        <div class="alert alert-success" role="alert">
+            {{ comment_green_alert }}
         </div>
     {% endif %}
 
     <div class="text-center">
         <h1 class="m-3">{{ listing.title }}</h1>
-        <img src="{{ listing.image_url }}" alt="{{ listing.title }}" height="300px" class="m-3">
+        <img src="{{ listing.image_url }}" alt="{{ listing.title }}" height="300px" class="m-50">
         <p><strong>Description:</strong> {{ listing.description }}</p>
-        <p><strong>Current Price: </strong>${{ listing.price|floatformat:2 }}</p>
         <p><strong>Category:</strong> {{ listing.category }}</p>
-        <p><strong>Listing Owner: </strong>{{ listing.owner }}</p>
+        <p><strong>Listing Owner: </strong>{{ listing.owner|capfirst }}</p>
+        <br>
+        <p><strong>Starting Price: </strong>${{ listing.initial_price|floatformat:2 }}</p>
+        <p>
+            <strong>Current Bidding Price: </strong>
+            {% if listing.current_highest_bid %}
+                $ {{ listing.current_highest_bid.bid|floatformat:2 }} made by {{ listing.current_highest_bid.user.username }}
+            {% else %}
+                No bids made yet
+            {% endif %}
+        </p>
     </div>
     <hr>
 
@@ -70,7 +85,7 @@
                 {% for comment in comments %}
                     <li class="list-group-item p-4 row">
                         <p>{{ comment.text }}</p>
-                        <p><small><i>Commented by: {{ comment.user.username }} ({{ comment.date_time }})</i></small></p>
+                        <p><small><i>Commented by: {{ comment.user.username|capfirst }} ({{ comment.date_time }})</i></small></p>
                         {% if request.user == comment.user %}
                             <form action="{% url 'delete_comment' id=listing.id %}" method="post">
                                 {% csrf_token %}
