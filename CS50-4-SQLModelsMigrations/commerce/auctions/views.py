@@ -215,6 +215,21 @@ def category_listing(request):
     })
 
 
+# Allows the user to view their watchlist
+@login_required(login_url='login')
+def watchlist(request):
+
+    # Gets all listings in the current user's watchlist
+     current_user = request.user
+     watchlist_data = current_user.user_watchlist.all()
+
+    # Displays the user's watchlist 
+     return render(request, "auctions/watchlist.html",
+    {
+        "listings": watchlist_data,
+    })
+
+
 # Allows the user to add a listing to their watchlist
 @login_required(login_url='login')
 def add_watchlist(request, id):
@@ -262,20 +277,6 @@ def remove_watchlist(request, id):
         "comments": listing_comments
     })
 
-
-# Allows the user to view their watchlist
-@login_required(login_url='login')
-def watchlist(request):
-
-    # Gets all listings in the current user's watchlist
-     current_user = request.user
-     watchlist_data = current_user.user_watchlist.all()
-
-    # Displays the user's watchlist 
-     return render(request, "auctions/watchlist.html",
-    {
-        "listings": watchlist_data,
-    })
 
 # Allows the user to add a comment
 @login_required(login_url='login')
@@ -335,4 +336,17 @@ def delete_comment(request, id):
 
     # Redirects user back to the listing's page
     return HttpResponseRedirect(reverse("listing", args=(id,)))
+
+
+# Allows the user to view their list of bids
+@login_required(login_url='login')
+def bidlist(request):
+    pass
+
+
+# Allows the user to bid for a listing
+@login_required(login_url='login')
+def add_bid(request, id):
+    pass
+
 

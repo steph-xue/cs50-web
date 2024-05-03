@@ -30,7 +30,7 @@ class Listing(models.Model):
     description = models.CharField(max_length=300)
     image_url = models.CharField(max_length=300)
     initial_price = models.FloatField(),
-    current_bid = models.ForeignKey(Bid, on_delete=models.CASCADE, blank=True, null=True, related_name="listing_bid")
+    current_highest_bid = models.ForeignKey(Bid, on_delete=models.CASCADE, blank=True, null=True, related_name="listing_bid")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True, related_name="listing_category")
     is_active = models.BooleanField(default=True)
     watchlist = models.ManyToManyField(User, blank=True, null=True, related_name="user_watchlist")
