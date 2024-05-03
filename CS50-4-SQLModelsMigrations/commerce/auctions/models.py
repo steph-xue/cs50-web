@@ -18,11 +18,10 @@ class Category(models.Model):
 # Model for bid database (bid price, listing item, user who made the bid)
 class Bid(models.Model):
     bid = models.FloatField()
-    listing_item = models.ForeignKey(Listing, on_delete=models.CASCADE, blank=True, null=True, related_name="bid_listing")
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="bid_user")
 
     def __str__(self):
-        return f"{self.bid} bid by {self.user} on {self.listing_item}"
+        return f"{self.bid} bid made by {self.user}"
 
 
 # Model for auction listings database (title, description, image url, current price, category, in which users watchlists, owner of the posting)
