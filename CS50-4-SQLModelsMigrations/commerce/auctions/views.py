@@ -111,6 +111,56 @@ def listing(request, id):
         "in_watchlist": in_watchlist,
         "comments": sorted_listing_comments
     })
+    
+
+# Allows the user to select from different categories to view
+def category(request):
+
+    # Gets all categories avaliable (sorted in alphabetical order by category name)
+    all_categories = Category.objects.all()
+    sorted_all_categories = sorted(all_categories, key=lambda category: category.category_name)
+
+    # Shows user page to select from all categories avaliable
+    return render(request, "auctions/category.html",
+        {
+            "categories": sorted_all_categories
+        })
+
+
+# Allows the user to submit a chosen category and view corresponding listings
+def category_listing(request):
+
+    # Gets all categories avaliable (sorted in alphabetical order by category name)
+    all_categories = Category.objects.all()
+    sorted_all_categories = sorted(all_categories, key=lambda category: category.category_name)
+
+    # If no category is selected, displays an error message
+    if not request.POST.get("category", None):
+        return render(request, "auctions/category.html",
+        {
+            "categories": sorted_all_categories,
+            "message_red_alert": "Please select a valid category"
+        })
+    
+    # Retrieves the category selected 
+    category = request.POST.get("category", None)
+    category_data = Category.objects.get(category_name=category)
+
+    # Retrieves the other categories to choose from (sorted in alphabetical order by category name)
+    other_category_data = Category.objects.exclude(category_name=category)
+    sorted_other_category_data = sorted(other_category_data, key=lambda category: category.category_name)
+
+    # Gets all listings within the choosen category (sorted in alphabetical order by title)
+    active_listings = Listing.objects.filter(category=category_data, is_active=True)
+    sorted_active_listings = sorted(active_listings, key=lambda listing: listing.title)
+
+    # Redirects user to view listings in the chose category
+    return render(request, "auctions/category_listing.html",
+    {
+        "categories": sorted_other_category_data,
+        "category": category_data,
+        "listings": sorted_active_listings,
+    })
 
 
 # Allows the user to create a new listing
@@ -173,55 +223,21 @@ def create(request):
         {
             "categories": sorted_all_categories
         })
-    
-
-# Allows the user to select from different categories to view
-def category(request):
-
-    # Gets all categories avaliable (sorted in alphabetical order by category name)
-    all_categories = Category.objects.all()
-    sorted_all_categories = sorted(all_categories, key=lambda category: category.category_name)
-
-    # Shows user page to select from all categories avaliable
-    return render(request, "auctions/category.html",
-        {
-            "categories": sorted_all_categories
-        })
 
 
-# Allows the user to submit a chosen category and view corresponding listings
-def category_listing(request):
+# Allows the user to view their own listed auctions
+@login_required(login_url='login')
+def your_listings(request):
 
-    # Gets all categories avaliable (sorted in alphabetical order by category name)
-    all_categories = Category.objects.all()
-    sorted_all_categories = sorted(all_categories, key=lambda category: category.category_name)
+    # Gets all active listings in the current user's watchlist (sorted in alphabetical order by title)
+    current_user = request.user
+    owner_listings = current_user.listing_user.all()
+    sorted_owner_listings = sorted(owner_listings, key=lambda listing: listing.title)
 
-    # If no category is selected, displays an error message
-    if not request.POST.get("category", None):
-        return render(request, "auctions/category.html",
-        {
-            "categories": sorted_all_categories,
-            "message_red_alert": "Please select a valid category"
-        })
-    
-    # Retrieves the category selected 
-    category = request.POST.get("category", None)
-    category_data = Category.objects.get(category_name=category)
-
-    # Retrieves the other categories to choose from (sorted in alphabetical order by category name)
-    other_category_data = Category.objects.exclude(category_name=category)
-    sorted_other_category_data = sorted(other_category_data, key=lambda category: category.category_name)
-
-    # Gets all listings within the choosen category (sorted in alphabetical order by title)
-    active_listings = Listing.objects.filter(category=category_data, is_active=True)
-    sorted_active_listings = sorted(active_listings, key=lambda listing: listing.title)
-
-    # Redirects user to view listings in the chose category
-    return render(request, "auctions/category_listing.html",
+    # Displays the user's watchlist 
+    return render(request, "auctions/your_listings.html",
     {
-        "categories": sorted_other_category_data,
-        "category": category_data,
-        "listings": sorted_active_listings,
+        "listings": sorted_owner_listings
     })
 
 
@@ -451,13 +467,16 @@ def add_bid(request, id):
     listing_data.current_highest_bid = new_highest_bid
     listing_data.save()
 
+    # Add current user to the watchlist database of the listed item
+    listing_data.watchlist.add(current_user)
+
     # Redirects user back to the listing's page with a success message
     return render(request, "auctions/listing.html",
         {
             "listing": listing_data,
-            "in_watchlist": in_watchlist,
+            "in_watchlist": True,
             "comments": sorted_listing_comments,
-            "message_green_alert": f"Bid of ${bid:.2f} was added successfully"
+            "message_green_alert": f"Bid of ${bid:.2f} was added successfully! Listing is also added to your the watchlist!"
         })
 
 # Allows the user to close a listing if they are the owner of the listing
@@ -471,8 +490,13 @@ def close_listing(request, id):
     # Closes the current listing if the user is the owner of the listing and sets its winner
     if current_user == listing_data.owner:
         listing_data.is_active = False
-        listing_data.winner = listing_data.current_highest_bid.user
-        listing_data.save()
+        if listing_data.current_highest_bid:
+            listing_data.winner = listing_data.current_highest_bid.user
+        else:
+            listing_data.winner = None
+    
+    # Saves the winner of the listing
+    listing_data.save()
 
     # Gets all remaining active listings (sorted by alphabetical order by title)
     active_listings = Listing.objects.filter(is_active=True)

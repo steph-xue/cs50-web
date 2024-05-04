@@ -12,6 +12,8 @@
 
         <h2 class="text-center">Create A New Listing</h2>
 
+        <br>
+
         <form action="{% url 'create' %}" method="post" class="col-8 offset-2">
             {% csrf_token %}
             <div class="form-group">

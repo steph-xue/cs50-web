@@ -34,7 +34,7 @@
                 <div>${{ listing.current_highest_bid.highest_bid|floatformat:2 }}</div>
                 <div><strong>Winner: {{ listing.winner|capfirst }}</strong></div>
             {% else %}
-                <div><strong>Current Highest Bidding Price: </strong></div>
+                <div class="mb-1"><strong>Current Highest Bidding Price: </strong></div>
                 {% if listing.current_highest_bid %}
                     <div>${{ listing.current_highest_bid.highest_bid|floatformat:2 }}</div>
                     <div class="smaller_text mt-1"><i>(made by {{ listing.current_highest_bid.user.username|capfirst }})</i></div>
@@ -47,7 +47,7 @@
     <hr>
 
 
-    {% if user.is_authenticated and not listing.winner%}
+    {% if user.is_authenticated and not listing.winner and request.user != listing.owner %}
         <form action="{% url 'add_bid' id=listing.id %}" method="post" class="col-4 offset-4">
             {% csrf_token %}
             <div class="form-group text-center">
