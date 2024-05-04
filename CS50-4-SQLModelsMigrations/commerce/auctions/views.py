@@ -119,7 +119,7 @@ def create(request):
 
     # Gets all categories avaliable (sorted in alphabetical order by category name)
     all_categories = Category.objects.all()
-    sorted_all_categories = sorted(all_categories, key=lambda category: category.name)
+    sorted_all_categories = sorted(all_categories, key=lambda category: category.category_name)
 
     # POST - allows user to create a new listing via a form
     if request.method == "POST":
@@ -180,7 +180,7 @@ def category(request):
 
     # Gets all categories avaliable (sorted in alphabetical order by category name)
     all_categories = Category.objects.all()
-    sorted_all_categories = sorted(all_categories, key=lambda category: category.name)
+    sorted_all_categories = sorted(all_categories, key=lambda category: category.category_name)
 
     # Shows user page to select from all categories avaliable
     return render(request, "auctions/category.html",
@@ -194,11 +194,7 @@ def category_listing(request):
 
     # Gets all categories avaliable (sorted in alphabetical order by category name)
     all_categories = Category.objects.all()
-    sorted_all_categories = sorted(all_categories, key=lambda category: category.name)
-
-    # Retrieves the other categories to choose from (sorted in alphabetical order by category name)
-    other_category_data = Category.objects.exclude(category_name=category)
-    sorted_other_category_data = sorted(other_category_data, key=lambda category: category.name)
+    sorted_all_categories = sorted(all_categories, key=lambda category: category.category_name)
 
     # If no category is selected, displays an error message
     if not request.POST.get("category", None):
@@ -207,10 +203,14 @@ def category_listing(request):
             "categories": sorted_all_categories,
             "message": "Please select a valid category"
         })
-        
+    
     # Retrieves the category selected 
     category = request.POST.get("category", None)
     category_data = Category.objects.get(category_name=category)
+
+    # Retrieves the other categories to choose from (sorted in alphabetical order by category name)
+    other_category_data = Category.objects.exclude(category_name=category)
+    sorted_other_category_data = sorted(other_category_data, key=lambda category: category.category_name)
 
     # Gets all listings within the choosen category (sorted in alphabetical order by title)
     active_listings = Listing.objects.filter(category=category_data, is_active=True)
@@ -262,7 +262,7 @@ def add_watchlist(request, id):
         "listing": listing_data,
         "in_watchlist": True,
         "comments": sorted_listing_comments,
-        "watchlist_alert": f"Added {listing_data.title} to {request.user.username.captitalize()}'s watchlist"
+        "watchlist_alert": f"Added {listing_data.title} to {request.user.username.capitalize()}'s watchlist"
     })
 
 
@@ -410,6 +410,11 @@ def add_bid(request, id):
                 "comments": listing_comments,
                 "comment_red_alert": "Error: Bid is lower than or equal to that of the current highest bidding price"
             })
+        
+        # Delete the old highest bid from the database
+        old_id = listing_data.current_highest_bid.id
+        old_bid = Bid.objects.get(pk=old_id)
+        old_bid.delete()
         
     # If no bid exists for the listing, return an error if the bid is lower than the starting price
     else:
