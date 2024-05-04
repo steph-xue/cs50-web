@@ -468,9 +468,10 @@ def close_listing(request, id):
     listing_data = Listing.objects.get(pk=id)
     current_user = request.user
     
-    # Closes the current listing if the user is the owner of the listing
+    # Closes the current listing if the user is the owner of the listing and sets its winner
     if current_user == listing_data.owner:
         listing_data.is_active = False
+        listing_data.winner = listing_data.current_highest_bid.user
         listing_data.save()
 
     # Gets all remaining active listings (sorted by alphabetical order by title)
@@ -489,14 +490,15 @@ def close_listing(request, id):
 @login_required(login_url='login')
 def auctions_won(request):
      
-    # Gets all bids that the current user's holds the highest bid for
+    # Gets all listings the current user has won (sorted in alphabetical order by title)
     current_user = request.user
-    bidlist_data = current_user.bid_user.all()
+    winner_listings = current_user.listing_winner.all()
+    sorted_winner_listings = sorted(winner_listings, key=lambda listing: listing.title)
 
-    return render(request, "auctions/index.html",
+    # Displays the bidding auctions the user has won
+    return render(request, "auctions/auctions_won.html",
     {
-        "listings": sorted_active_listings,
-        "message_green_alert": f"Listing for {listing_data.title} was closed successfully"
+        "listings": sorted_winner_listings
     })
 
 
