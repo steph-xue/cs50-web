@@ -29,11 +29,12 @@
         <br>
         <p><strong>Starting Price: </strong>${{ listing.initial_price|floatformat:2 }}</p>
         <p>
-            <strong>Current Highest Bidding Price: </strong>
+            <div><strong>Current Highest Bidding Price: </strong></div>
             {% if listing.current_highest_bid %}
-                ${{ listing.current_highest_bid.highest_bid|floatformat:2 }} made by {{ listing.current_highest_bid.user.username|capfirst }}
+                <div>${{ listing.current_highest_bid.highest_bid|floatformat:2 }}</div>
+                <div class="smaller_text mt-1"><i>(made by {{ listing.current_highest_bid.user.username|capfirst }})</i></div>
             {% else %}
-                No bids made yet
+                <div>No bids made yet</div>
             {% endif %}
         </p>
     </div>

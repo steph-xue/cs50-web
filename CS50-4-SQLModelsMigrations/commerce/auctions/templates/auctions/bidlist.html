@@ -20,7 +20,7 @@
                             <div class="mb-1">Highest Bidding Price: </div> 
                             {% if listing.current_highest_bid %}
                                 <div>${{ listing.current_highest_bid.highest_bid|floatformat:2 }}</div>
-                                <div class="smaller_text"><i>(made by {{ listing.current_highest_bid.user.username|capfirst }})</i></div>
+                                <div class="smaller_text mt-1"><i>(made by {{ listing.current_highest_bid.user.username|capfirst }})</i></div>
                             {% else %}
                                 <div>No bids made yet</div>
                             {% endif %}
@@ -36,7 +36,7 @@
             <p class="text-center">No items currently in the Bidding list</p>
         {% endif %}
 
-        <p class="mt-5"><i>Only active listings where you hold the highest bid are listed</i></p>
+        <p class="text-center mt-5"><i>Only active listings where you hold the highest bid are listed</i></p>
 
     {% endif %}
     
