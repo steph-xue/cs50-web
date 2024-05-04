@@ -457,8 +457,10 @@ def close_listing(request, id):
     listing_data = Listing.objects.get(pk=id)
     current_user = request.user
     
-    # Closes the current listing
-    listing_data.is_active = False
+    # Closes the current listing if the user is the owner of the listing
+    if current_user == listing_data.owner:
+        listing_data.is_active = False
+        listing_data.save()
 
     # Gets all remaining active listings (sorted by alphabetical order by title)
     active_listings = Listing.objects.filter(is_active=True)
@@ -467,7 +469,7 @@ def close_listing(request, id):
     return render(request, "auctions/index.html",
         {
             "listings": sorted_active_listings,
-            "message_green_alert": f"Bid of ${bid:.2f} was added successfully"
+            "message_green_alert": f"Listing for {listing_data.title} was closed successfully"
         })
 
 
