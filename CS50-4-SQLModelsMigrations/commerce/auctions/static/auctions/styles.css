@@ -12,6 +12,10 @@ body {
     font-size: 18px;
 }
 
+.smaller_text {
+    font-size: 12px;
+}
+
 #navid {
     background-color: #ECE2DA;
 }

@@ -11,10 +11,15 @@ from .models import User, Category, Listing, Comment, Bid
 
 # Allows the user to view the homepage with all active listings
 def index(request):
+
+    # Gets all active listings (sorted by alphabetical order by title)
     active_listings = Listing.objects.filter(is_active=True)
+    sorted_active_listings = sorted(active_listings, key=lambda listing: listing.title)
+
+    # Renders the homepage with all active listings
     return render(request, "auctions/index.html",
     {
-        "listings": active_listings
+        "listings": sorted_active_listings
     })
 
 
@@ -93,17 +98,18 @@ def listing(request, id):
     listing_data = Listing.objects.get(pk=id)
     current_user = request.user
 
-    # Gets all comments for the listing item
-    listing_comments = Comment.objects.filter(listing_item=listing_data)
-
     # Determines if the current user has the listing in their watchlist
     in_watchlist = current_user in listing_data.watchlist.all()
+
+    # Gets all comments for the listing item (sorted in reverse chronological order by date/time)
+    listing_comments = Comment.objects.filter(listing_item=listing_data)
+    sorted_listing_comments = sorted(listing_comments, key=lambda comment: comment.date_time)
 
     return render(request, "auctions/listing.html",
     {
         "listing": listing_data,
         "in_watchlist": in_watchlist,
-        "comments": listing_comments
+        "comments": sorted_listing_comments
     })
 
 
@@ -111,8 +117,9 @@ def listing(request, id):
 @login_required(login_url='login')
 def create(request):
 
-    # Gets all categories avaliable 
+    # Gets all categories avaliable (sorted in alphabetical order by category name)
     all_categories = Category.objects.all()
+    sorted_all_categories = sorted(all_categories, key=lambda category: category.name)
 
     # POST - allows user to create a new listing via a form
     if request.method == "POST":
@@ -129,20 +136,20 @@ def create(request):
         if not title or not description or not initial_price or not category:
             return render(request, "auctions/create.html",
             {
-                "message": "Missing information: Please fill out all fields",
-                "categories": all_categories
+                "categories": sorted_all_categories,
+                "message": "Missing information: Please fill out all fields"
             })
-
-        # Get the category object data
-        category_data = Category.objects.get(category_name=category)
 
         # Returns an error message if the price is not a positive value
         if initial_price <= 0:
             return render(request, "auctions/create.html",
         {
-            "message": "Error: Price must be a positive value",
-            "categories": all_categories
+            "categories": all_categories,
+            "message": "Error: Price must be a positive value"
         })
+
+        # Get the category object data
+        category_data = Category.objects.get(category_name=category)
 
         # Create listing object
         listing_data = Listing(
@@ -164,34 +171,40 @@ def create(request):
     else:
         return render(request, "auctions/create.html",
         {
-            "categories": all_categories
+            "categories": sorted_all_categories
         })
     
 
 # Allows the user to select from different categories to view
 def category(request):
 
-    # Gets all categories avaliable 
+    # Gets all categories avaliable (sorted in alphabetical order by category name)
     all_categories = Category.objects.all()
+    sorted_all_categories = sorted(all_categories, key=lambda category: category.name)
 
     # Shows user page to select from all categories avaliable
     return render(request, "auctions/category.html",
         {
-            "categories": all_categories
+            "categories": sorted_all_categories
         })
 
 
 # Allows the user to submit a chosen category and view corresponding listings
 def category_listing(request):
 
-    # Gets all categories avaliable 
+    # Gets all categories avaliable (sorted in alphabetical order by category name)
     all_categories = Category.objects.all()
+    sorted_all_categories = sorted(all_categories, key=lambda category: category.name)
+
+    # Retrieves the other categories to choose from (sorted in alphabetical order by category name)
+    other_category_data = Category.objects.exclude(category_name=category)
+    sorted_other_category_data = sorted(other_category_data, key=lambda category: category.name)
 
     # If no category is selected, displays an error message
     if not request.POST.get("category", None):
         return render(request, "auctions/category.html",
         {
-            "categories": all_categories,
+            "categories": sorted_all_categories,
             "message": "Please select a valid category"
         })
         
@@ -199,19 +212,16 @@ def category_listing(request):
     category = request.POST.get("category", None)
     category_data = Category.objects.get(category_name=category)
 
-
-    # Retrieves the other categories (others to choose from)
-    other_category_data = Category.objects.exclude(category_name=category)
-
-    # Gets all listings within the choosen category
-    listings = Listing.objects.filter(category=category_data, is_active=True)
+    # Gets all listings within the choosen category (sorted in alphabetical order by title)
+    active_listings = Listing.objects.filter(category=category_data, is_active=True)
+    sorted_active_listings = sorted(active_listings, key=lambda listing: listing.title)
 
     # Redirects user to view listings in the chose category
     return render(request, "auctions/category_listing.html",
     {
-        "categories": other_category_data,
-        "listings": listings,
+        "categories": sorted_other_category_data,
         "category": category_data,
+        "listings": sorted_active_listings,
     })
 
 
@@ -219,14 +229,15 @@ def category_listing(request):
 @login_required(login_url='login')
 def watchlist(request):
 
-    # Gets all listings in the current user's watchlist
+    # Gets all listings in the current user's watchlist (sorted in alphabetical order by title)
      current_user = request.user
      watchlist_data = current_user.user_watchlist.all()
+     sorted_watchlist_data = sorted(watchlist_data, key=lambda listing: listing.title)
 
     # Displays the user's watchlist 
      return render(request, "auctions/watchlist.html",
     {
-        "listings": watchlist_data,
+        "listings": sorted_watchlist_data
     })
 
 
@@ -241,16 +252,17 @@ def add_watchlist(request, id):
     # Add current user to the watchlist database of the listed item
     listing_data.watchlist.add(current_user)
 
-    # Gets all comments for the listing item
+    # Gets all comments for the listing item (sorted in reverse chronological order by date/time)
     listing_comments = Comment.objects.filter(listing_item=listing_data)
+    sorted_listing_comments = sorted(listing_comments, key=lambda comment: comment.date_time)
 
     # Redirects user to the listing's page
     return render(request, "auctions/listing.html",
     {
         "listing": listing_data,
-        "watchlist_alert": f"Added {listing_data.title} to {request.user.username}'s watchlist",
         "in_watchlist": True,
-        "comments": listing_comments
+        "comments": sorted_listing_comments,
+        "watchlist_alert": f"Added {listing_data.title} to {request.user.username.captitalize()}'s watchlist"
     })
 
 
@@ -262,19 +274,20 @@ def remove_watchlist(request, id):
     listing_data = Listing.objects.get(pk=id)
     current_user = request.user
 
-    # Add current user to the watchlist database of the listed item
+    # Remove current user to the watchlist database of the listed item
     listing_data.watchlist.remove(current_user)
     
-    # Gets all comments for the listing item
+    # Gets all comments for the listing item (sorted in reverse chronological order by date/time)
     listing_comments = Comment.objects.filter(listing_item=listing_data)
+    sorted_listing_comments = sorted(listing_comments, key=lambda comment: comment.date_time)
 
     # Redirects user to the listing's page
     return render(request, "auctions/listing.html",
     {
         "listing": listing_data,
-        "watchlist_alert": f"Removed {listing_data.title} from {request.user.username}'s watchlist",
         "in_watchlist": False,
-        "comments": listing_comments
+        "comments": sorted_listing_comments,
+        "watchlist_alert": f"Removed {listing_data.title} from {request.user.username.capitalize()}'s watchlist"
     })
 
 
@@ -286,14 +299,15 @@ def add_comment(request, id):
     listing_data = Listing.objects.get(pk=id)
     current_user = request.user
 
-    # Get the added comment
-    comment = request.POST.get("comment", None)
-
     # Determines if the current user has the listing in their watchlist
     in_watchlist = current_user in listing_data.watchlist.all()
 
-    # Gets all comments for the listing item
+    # Gets all comments for the listing item (sorted in reverse chronological order by date/time)
     listing_comments = Comment.objects.filter(listing_item=listing_data)
+    sorted_listing_comments = sorted(listing_comments, key=lambda comment: comment.date_time)
+
+    # Get the added comment
+    comment = request.POST.get("comment", None)
 
     # Displays error message if no comment added
     if not comment:
@@ -301,7 +315,7 @@ def add_comment(request, id):
         {
             "listing": listing_data,
             "in_watchlist": in_watchlist,
-            "comments": listing_comments,
+            "comments": sorted_listing_comments,
             "comment_red_alert": "Error: No comment was added"
         })
 

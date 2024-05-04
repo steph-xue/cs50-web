@@ -29,9 +29,9 @@
         <br>
         <p><strong>Starting Price: </strong>${{ listing.initial_price|floatformat:2 }}</p>
         <p>
-            <strong>Current Bidding Price: </strong>
+            <strong>Current Highest Bidding Price: </strong>
             {% if listing.current_highest_bid %}
-                $ {{ listing.current_highest_bid.bid|floatformat:2 }} made by {{ listing.current_highest_bid.user.username }}
+                ${{ listing.current_highest_bid.highest_bid|floatformat:2 }} made by {{ listing.current_highest_bid.user.username|capfirst }}
             {% else %}
                 No bids made yet
             {% endif %}
@@ -73,8 +73,7 @@
         {% endif %}
 
     {% endif %}
-    <br>
-    <br>
+    <br><br>
 
     <div class="card" style="width: 90rem;">
         <div class="card-header">

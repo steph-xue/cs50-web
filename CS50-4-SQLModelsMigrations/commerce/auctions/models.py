@@ -15,22 +15,23 @@ class Category(models.Model):
         return self.category_name
     
 
-# Model for bid database (bid price, listing item, user who made the bid)
+# Model for highest bids database (highest bid price for a listing, user who made the highest bid for a listing)
 class Bid(models.Model):
-    bid = models.FloatField(default=None)
+    highest_bid = models.FloatField(default=None)
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="bid_user")
 
     def __str__(self):
-        return f"{self.bid} bid made by {self.user}"
+        return f"${self.highest_bid:.2f} bid made by {self.user}"
 
 
-# Model for auction listings database (title, description, image url, current price, category, in which users watchlists, owner of the posting)
+# Model for auction listings database (each listing includes a title, description, image url, initial price, current highest bid
+# category, is active/inactive in the listings, in which users' watchlists, owner of the posting)
 class Listing(models.Model):
-    title = models.CharField(max_length=30, default=None)
-    description = models.CharField(max_length=300, default=None)
+    title = models.CharField(max_length=30)
+    description = models.CharField(max_length=300)
     image_url = models.CharField(max_length=300, default=None)
     initial_price = models.FloatField(default=None)
-    current_highest_bid = models.ForeignKey(Bid, on_delete=models.CASCADE, blank=True, null=True, related_name="listing_bid", default=None)
+    current_highest_bid = models.ForeignKey(Bid, on_delete=models.SET_NULL, blank=True, null=True, related_name="listing_bid", default=None)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True, related_name="listing_category")
     is_active = models.BooleanField(default=True)
     watchlist = models.ManyToManyField(User, blank=True, null=True, related_name="user_watchlist")
