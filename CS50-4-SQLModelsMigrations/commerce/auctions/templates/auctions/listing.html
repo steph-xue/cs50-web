@@ -78,13 +78,13 @@
             <ul class="list-group list-group-flush">
                 {% for comment in comments %}
                     <li class="list-group-item p-4 row">
-                        <p>{{ comment.text }}</p>
+                        <p class="lessmargin">{{ comment.text }}</p>
                         <p><small><i>Commented by: {{ comment.user.username|capfirst }} ({{ comment.date_time }})</i></small></p>
                         {% if request.user == comment.user %}
                             <form action="{% url 'delete_comment' id=listing.id %}" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="delete_comment" value="{{ comment.id }}">
-                                <button type="submit" class="btn btn-sm btn-brown ml-2">Delete Comment</button>
+                                <button type="submit" class="btn btn-sm btn-brown lessmargin">Delete Comment</button>
                             </form>
                         {% endif %}
                     </li>
@@ -113,7 +113,7 @@
             <form class="text-center" action="{% url 'close_listing' id=listing.id %}" action="post">
                 {% csrf_token %}
                 <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                <button type="submit" class="btn btn-brown">Close Listing</button>
+                <button type="submit" class="btn btn-danger">Close Listing</button>
                 <p class="mt-1"><i>(Listed item goes to the highest bidder)</i></p>
             </form>
         {% endif %}

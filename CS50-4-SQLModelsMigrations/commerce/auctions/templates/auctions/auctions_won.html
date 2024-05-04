@@ -17,18 +17,12 @@
                         <h4 class="card-title">{{ listing.title }}</h4>
                         <p class="card-text">{{ listing.description }}</p>
                         <br>
-                        <h6 class="card-text">Starting Price: $ {{ listing.initial_price|floatformat:2 }}</h6>
+                        <h6 class="card-text">Starting Price: ${{ listing.initial_price|floatformat:2 }}</h6>
                         <h6 class="card-text">
-                            <div class="mb-1">Highest Bidding Price: </div> 
-                            {% if listing.current_highest_bid %}
-                                <div>${{ listing.current_highest_bid.highest_bid|floatformat:2 }}</div>
-                                <div class="smaller_text mt-1"><i>(made by {{ listing.current_highest_bid.user.username|capfirst }})</i></div>
-                            {% else %}
-                                <div>No bids made yet</div>
-                            {% endif %}
+                            <div class="mb-1">Final Bidding Price: </div> 
+                            <div>${{ listing.current_highest_bid.highest_bid|floatformat:2 }}</div>
                         </h6>
-                        <br>
-                        <a href="{% url 'listing' id=listing.id %}" class="btn btn-brown">See details</a>
+                        <h6 class="card-text">Winner: {{ listing.winner|capfirst }}</h6>
                     </div>
                 </div>
                 {% endfor %}

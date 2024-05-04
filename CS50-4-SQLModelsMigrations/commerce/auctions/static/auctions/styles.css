@@ -16,6 +16,11 @@ body {
     font-size: 12px;
 }
 
+.lessmargin {
+    margin-top: -15px;
+    margin-bottom: -3px;
+}
+
 #navid {
     background-color: #ECE2DA;
 }
