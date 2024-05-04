@@ -229,16 +229,42 @@ def create(request):
 @login_required(login_url='login')
 def your_listings(request):
 
-    # Gets all active listings in the current user's watchlist (sorted in alphabetical order by title)
-    current_user = request.user
-    owner_listings = current_user.listing_user.all()
-    sorted_owner_listings = sorted(owner_listings, key=lambda listing: listing.title)
+    # POST - Allows the user to select from viewing all, only active, or only inactive listings owned by the user
+    if request.method == "POST":
 
-    # Displays the user's watchlist 
-    return render(request, "auctions/your_listings.html",
-    {
-        "listings": sorted_owner_listings
-    })
+        # Gets the listing type selected by the user (all, active, or inactive)
+        current_user = request.user
+        listing_type = request.POST["listing_type"]
+
+        if listing_type == "active":
+            owner_listings = current_user.listing_user.filter(is_active=True)
+        elif listing_type == "inactive":
+            owner_listings = current_user.listing_user.filter(is_active=False)
+        else:
+            owner_listings = current_user.listing_user.all()
+
+        # Sort the user's own listings (in alphabetical order by title)
+        sorted_owner_listings = sorted(owner_listings, key=lambda listing: listing.title)
+
+        # Displays the user's own listings 
+        return render(request, "auctions/your_listings.html",
+        {
+            "listings": sorted_owner_listings
+        })
+
+    # GET - displays all of the user's own listed auctions by default (active and inactive)
+    else:
+
+        # Gets all listings owned by the user (sorted in alphabetical order by title)
+        current_user = request.user
+        owner_listings = current_user.listing_user.all()
+        sorted_owner_listings = sorted(owner_listings, key=lambda listing: listing.title)
+
+        # Displays the user's listings 
+        return render(request, "auctions/your_listings.html",
+        {
+            "listings": sorted_owner_listings
+        })
 
 
 # Allows the user to view their watchlist

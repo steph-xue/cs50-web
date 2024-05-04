@@ -6,7 +6,22 @@
 
         <h2 class="text-center">Your Listings</h2>
 
-        <br>
+        <form action="{% url 'your_listings' %}" method="post" class="col-4 offset-4">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Select: </label>
+                <select class="form-control" name="listing_type">
+                    <option value="all">All</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+              </div>
+            <div class="text-center">
+                <input class="btn btn-brown" type="submit" value="View Listings">
+            </div>
+        </form>
+
+        <br><br>
 
         {% if listings %}
             <div class="row text-center">
