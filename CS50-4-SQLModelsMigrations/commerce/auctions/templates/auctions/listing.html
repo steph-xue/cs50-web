@@ -14,6 +14,12 @@
         </div>
     {% endif %}
 
+    {% if request.user == listing.winner %}
+        <div class="alert alert-success" role="alert">
+            Congradulations! You have won the auction!
+        </div>
+    {% endif %}
+
     <div class="text-center">
         <h1 class="m-3">{{ listing.title }}</h1>
         <img src="{{ listing.image_url }}" alt="{{ listing.title }}" height="300px" class="m-50">
@@ -23,20 +29,25 @@
         <br>
         <p><strong>Starting Price: </strong>${{ listing.initial_price|floatformat:2 }}</p>
         <p>
-            <div><strong>Current Highest Bidding Price: </strong></div>
-            {% if listing.current_highest_bid %}
+            {% if listing.winner %}
+                <div class="mb-1">Final Bidding Price: </div> 
                 <div>${{ listing.current_highest_bid.highest_bid|floatformat:2 }}</div>
-                <div class="smaller_text mt-1"><i>(made by {{ listing.current_highest_bid.user.username|capfirst }})</i></div>
+                <div><strong>Winner: {{ listing.winner|capfirst }}</strong></div>
             {% else %}
-                <div>No bids made yet</div>
+                <div><strong>Current Highest Bidding Price: </strong></div>
+                {% if listing.current_highest_bid %}
+                    <div>${{ listing.current_highest_bid.highest_bid|floatformat:2 }}</div>
+                    <div class="smaller_text mt-1"><i>(made by {{ listing.current_highest_bid.user.username|capfirst }})</i></div>
+                {% else %}
+                    <div>No bids made yet</div>
+                {% endif %}
             {% endif %}
         </p>
     </div>
     <hr>
 
 
-    {% if user.is_authenticated %}
-
+    {% if user.is_authenticated and not listing.winner%}
         <form action="{% url 'add_bid' id=listing.id %}" method="post" class="col-4 offset-4">
             {% csrf_token %}
             <div class="form-group text-center">
@@ -91,7 +102,7 @@
                 {% endfor %}
             </ul>
         {% else %}
-            <p class="p-3">No comments</p>
+            <p class="pt-2 pl-3">No comments</p>
         {% endif %}
     </div>
 
@@ -109,7 +120,7 @@
     <br>
     
     {% if user.is_authenticated %}
-        {% if request.user == listing.owner %}
+        {% if request.user == listing.owner and listing.is_active %}
             <form class="text-center" action="{% url 'close_listing' id=listing.id %}" action="post">
                 {% csrf_token %}
                 <input type="hidden" name="listing_id" value="{{ listing.id }}">

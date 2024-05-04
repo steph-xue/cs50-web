@@ -229,9 +229,9 @@ def category_listing(request):
 @login_required(login_url='login')
 def watchlist(request):
 
-    # Gets all listings in the current user's watchlist (sorted in alphabetical order by title)
+    # Gets all active listings in the current user's watchlist (sorted in alphabetical order by title)
      current_user = request.user
-     watchlist_data = current_user.user_watchlist.all()
+     watchlist_data = current_user.user_watchlist.filter(is_active=True)
      sorted_watchlist_data = sorted(watchlist_data, key=lambda listing: listing.title)
 
     # Displays the user's watchlist 
@@ -482,7 +482,7 @@ def close_listing(request, id):
     return render(request, "auctions/index.html",
         {
             "listings": sorted_active_listings,
-            "message_green_alert": f"Listing for {listing_data.title} was closed successfully"
+            "message_green_alert": f"Congratulations! Your listing for {listing_data.title} has been closed successfully!"
         })
 
 

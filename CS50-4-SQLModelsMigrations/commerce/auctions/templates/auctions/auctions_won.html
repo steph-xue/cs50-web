@@ -4,6 +4,18 @@
 
     {% if user.is_authenticated %}
 
+        {% if message_green_alert %}
+            <div class="alert alert-success" role="alert">
+                {{ message_green_alert }}
+            </div>
+        {% endif %}
+
+        {% if message_red_alert %}
+            <div class="alert alert-danger" role="alert">
+                {{ message_red_alert }}
+            </div>
+        {% endif %}
+
         <h2 class="text-center">Bidding Auctions Won</h2>
 
         <br>
@@ -23,6 +35,8 @@
                             <div>${{ listing.current_highest_bid.highest_bid|floatformat:2 }}</div>
                         </h6>
                         <h6 class="card-text">Winner: {{ listing.winner|capfirst }}</h6>
+                        <br>
+                        <a href="{% url 'listing' id=listing.id %}" class="btn btn-brown">See details</a>
                     </div>
                 </div>
                 {% endfor %}
