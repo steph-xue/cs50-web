@@ -4,7 +4,7 @@
 
     {% if user.is_authenticated %}
 
-        <h2 class="text-center">Bidding list</h2>
+        <h2 class="text-center">Bidding Auctions Won</h2>
 
         <br>
 
@@ -35,10 +35,8 @@
             </div>
         {% else %}
             <br>
-            <p class="text-center">No items currently in the Bidding list</p>
+            <p class="text-center">No bidding auctions won yet</p>
         {% endif %}
-
-        <p class="text-center mt-5"><i>Only active listings where you hold the highest bid are listed</i></p>
 
     {% endif %}
     

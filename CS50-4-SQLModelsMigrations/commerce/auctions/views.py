@@ -356,14 +356,25 @@ def delete_comment(request, id):
 @login_required(login_url='login')
 def bidlist(request):
      
-    # Gets all listings in the current user's bidding list 
-     current_user = request.user
-     bidlist_data = current_user.bid_user.all()
+    # Gets all bids that the current user's holds the highest bid for
+    current_user = request.user
+    bidlist_data = current_user.bid_user.all()
 
-    # Displays the user's bidding list
-     return render(request, "auctions/bidlist.html",
+    # Create a new list to store all bid listings 
+    bid_list = []
+
+    # Iterates through all highest bids the user holds and appends the associated listings to the bid_list
+    for bid in bidlist_data:
+         listing = Listing.objects.get(current_highest_bid=bid)
+         bid_list.append(listing)
+    
+    # Sort the highest biding list (in alphabetical order by title of listing)
+    sorted_bid_list = sorted(bid_list, key=lambda listing: listing.title)
+
+    # Displays the user's highest bidding list
+    return render(request, "auctions/bidlist.html",
     {
-        "listings": bidlist_data,
+        "listings": sorted_bid_list,
     })
 
 
@@ -466,10 +477,26 @@ def close_listing(request, id):
     active_listings = Listing.objects.filter(is_active=True)
     sorted_active_listings = sorted(active_listings, key=lambda listing: listing.title)
 
+    # Redirects user to the homepage of active listings
     return render(request, "auctions/index.html",
         {
             "listings": sorted_active_listings,
             "message_green_alert": f"Listing for {listing_data.title} was closed successfully"
         })
+
+
+# Allows the user to see the bidding auctions they have won (after the listing has been closed)
+@login_required(login_url='login')
+def auctions_won(request):
+     
+    # Gets all bids that the current user's holds the highest bid for
+    current_user = request.user
+    bidlist_data = current_user.bid_user.all()
+
+    return render(request, "auctions/index.html",
+    {
+        "listings": sorted_active_listings,
+        "message_green_alert": f"Listing for {listing_data.title} was closed successfully"
+    })
 
 
