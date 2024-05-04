@@ -2,21 +2,15 @@
 
 {% block body %}
 
-    {% if watchlist_alert %}
+    {% if message_green_alert %}
         <div class="alert alert-success" role="alert">
-            {{ watchlist_alert }}
+            {{ message_green_alert }}
         </div>
     {% endif %}
 
-    {% if comment_red_alert %}
+    {% if message_red_alert %}
         <div class="alert alert-danger" role="alert">
-            {{ comment_red_alert }}
-        </div>
-    {% endif %}
-
-    {% if comment_green_alert %}
-        <div class="alert alert-success" role="alert">
-            {{ comment_green_alert }}
+            {{ message_red_alert }}
         </div>
     {% endif %}
 
@@ -110,6 +104,19 @@
             <input class="col-9 ml-2" type="text" name="comment">
             <button type="submit" class="btn btn-brown ml-2">Add Comment</button>
         </form>
+    {% endif %}
+
+    <br>
+    
+    {% if user.is_authenticated %}
+        {% if request.user == listing.owner %}
+            <form class="text-center" action="{% url 'close_listing' id=listing.id %}" action="post">
+                {% csrf_token %}
+                <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                <button type="submit" class="btn btn-brown">Close Listing</button>
+                <p class="mt-1"><i>(Listed item goes to the highest bidder)</i></p>
+            </form>
+        {% endif %}
     {% endif %}
 
 {% endblock %}

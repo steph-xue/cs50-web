@@ -2,6 +2,18 @@
 
 {% block body %}
 
+    {% if message_green_alert %}
+        <div class="alert alert-success" role="alert">
+            {{ message_green_alert }}
+        </div>
+    {% endif %}
+
+    {% if message_red_alert %}
+        <div class="alert alert-danger" role="alert">
+            {{ message_red_alert }}
+        </div>
+    {% endif %}
+
     <h2 class="text-center">Active Listings</h2>
     <br>
 

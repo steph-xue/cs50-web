@@ -41,7 +41,7 @@ def login_view(request):
             return HttpResponseRedirect(reverse("index"))
         else:
             return render(request, "auctions/login.html", {
-                "message": "Invalid username and/or password."
+                "message_red_alert": "Invalid username and/or password."
             })
     # GET - displays the login page
     else:
@@ -70,7 +70,7 @@ def register(request):
         confirmation = request.POST["confirmation"]
         if password != confirmation:
             return render(request, "auctions/register.html", {
-                "message": "Passwords must match."
+                "message_red_alert": "Passwords must match."
             })
 
         # Attempt to create new user (sees if user already exists), otherwise returns an error message
@@ -79,7 +79,7 @@ def register(request):
             user.save()
         except IntegrityError:
             return render(request, "auctions/register.html", {
-                "message": "Username already taken."
+                "message_red_alert": "Username already taken."
             })
         
         # Logs the user in and redirects them to the homepage
@@ -137,7 +137,7 @@ def create(request):
             return render(request, "auctions/create.html",
             {
                 "categories": sorted_all_categories,
-                "message": "Missing information: Please fill out all fields"
+                "message_red_alert": "Missing information: Please fill out all fields"
             })
 
         # Returns an error message if the price is not a positive value
@@ -145,7 +145,7 @@ def create(request):
             return render(request, "auctions/create.html",
         {
             "categories": all_categories,
-            "message": "Error: Price must be a positive value"
+            "message_red_alert": "Error: Price must be a positive value"
         })
 
         # Get the category object data
@@ -201,7 +201,7 @@ def category_listing(request):
         return render(request, "auctions/category.html",
         {
             "categories": sorted_all_categories,
-            "message": "Please select a valid category"
+            "message_red_alert": "Please select a valid category"
         })
     
     # Retrieves the category selected 
@@ -262,7 +262,7 @@ def add_watchlist(request, id):
         "listing": listing_data,
         "in_watchlist": True,
         "comments": sorted_listing_comments,
-        "watchlist_alert": f"Added {listing_data.title} to {request.user.username.capitalize()}'s watchlist"
+        "message_green_alert": f"Added {listing_data.title} to {request.user.username.capitalize()}'s watchlist"
     })
 
 
@@ -287,7 +287,7 @@ def remove_watchlist(request, id):
         "listing": listing_data,
         "in_watchlist": False,
         "comments": sorted_listing_comments,
-        "watchlist_alert": f"Removed {listing_data.title} from {request.user.username.capitalize()}'s watchlist"
+        "message_green_alert": f"Removed {listing_data.title} from {request.user.username.capitalize()}'s watchlist"
     })
 
 
@@ -316,7 +316,7 @@ def add_comment(request, id):
             "listing": listing_data,
             "in_watchlist": in_watchlist,
             "comments": sorted_listing_comments,
-            "comment_red_alert": "Error: No comment was added"
+            "message_red_alert": "Error: No comment was added"
         })
 
     # Get the date and time the comment was added
@@ -392,7 +392,7 @@ def add_bid(request, id):
             "listing": listing_data,
             "in_watchlist": in_watchlist,
             "comments": sorted_listing_comments,
-            "comment_red_alert": "Error: No bid was added"
+            "message_red_alert": "Error: No bid was added"
         })
 
     # Convert bid to float (once checked if bid was actually added)
@@ -408,7 +408,7 @@ def add_bid(request, id):
                 "listing": listing_data,
                 "in_watchlist": in_watchlist,
                 "comments": listing_comments,
-                "comment_red_alert": "Error: Bid is lower than or equal to that of the current highest bidding price"
+                "message_red_alert": "Error: Bid is lower than or equal to that of the current highest bidding price"
             })
         
         # Delete the old highest bid from the database
@@ -424,7 +424,7 @@ def add_bid(request, id):
                 "listing": listing_data,
                 "in_watchlist": in_watchlist,
                 "comments": listing_comments,
-                "comment_red_alert": "Error: Bid is lower than the starting price"
+                "message_red_alert": "Error: Bid is lower than the starting price"
             })
     
     # Create a new highest bid object
@@ -446,7 +446,28 @@ def add_bid(request, id):
             "listing": listing_data,
             "in_watchlist": in_watchlist,
             "comments": sorted_listing_comments,
-            "comment_green_alert": f"Bid of ${bid:.2f} was added successfully"
+            "message_green_alert": f"Bid of ${bid:.2f} was added successfully"
+        })
+
+# Allows the user to close a listing if they are the owner of the listing
+@login_required(login_url='login')
+def close_listing(request, id):
+    
+    # Get the current listing and user
+    listing_data = Listing.objects.get(pk=id)
+    current_user = request.user
+    
+    # Closes the current listing
+    listing_data.is_active = False
+
+    # Gets all remaining active listings (sorted by alphabetical order by title)
+    active_listings = Listing.objects.filter(is_active=True)
+    sorted_active_listings = sorted(active_listings, key=lambda listing: listing.title)
+
+    return render(request, "auctions/index.html",
+        {
+            "listings": sorted_active_listings,
+            "message_green_alert": f"Bid of ${bid:.2f} was added successfully"
         })
 
 

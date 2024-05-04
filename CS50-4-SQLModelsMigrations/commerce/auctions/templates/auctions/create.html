@@ -4,13 +4,13 @@
     
     {% if user.is_authenticated %}
 
-        <h2 class="text-center">Create A New Listing</h2>
-
-        {% if message %}
+        {% if message_red_alert %}
             <div class="alert alert-danger" role="alert">
-                {{ message }}
+                {{ message_red_alert }}
             </div>
         {% endif %}
+
+        <h2 class="text-center">Create A New Listing</h2>
 
         <form action="{% url 'create' %}" method="post" class="col-8 offset-2">
             {% csrf_token %}

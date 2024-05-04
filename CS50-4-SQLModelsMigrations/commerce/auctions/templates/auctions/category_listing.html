@@ -2,6 +2,12 @@
 
 {% block body %}
 
+    {% if message_red_alert %}
+        <div class="alert alert-danger" role="alert">
+            {{ message_red_alert }}
+        </div>
+    {% endif %}
+
     <h2 class="text-center">View By Category</h2>
 
     <br>
