@@ -11,6 +11,7 @@
             <div class="form-group">
                 <label>Select: </label>
                 <select class="form-control" name="listing_type">
+                    <option selected disabled>Please choose an option</option>
                     <option value="all">All</option>
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
@@ -20,6 +21,16 @@
                 <input class="btn btn-brown" type="submit" value="View Listings">
             </div>
         </form>
+
+        <br><br>
+
+        {% if listing_type == "active" %}
+            <h2 class="text-center">Active</h2>
+        {% elif listing_type == "inactive" %}
+            <h2 class="text-center">Inactive</h2>
+        {% else %}
+            <h2 class="text-center">All</h2>
+        {% endif %}
 
         <br><br>
 

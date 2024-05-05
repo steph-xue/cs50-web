@@ -1,5 +1,5 @@
 # Wiki Project
-- The wiki project allows the user to view, search, edit, and create encyclopedia entries on a wikipedia based web application
+The wiki project allows the user to view, search, edit, and create encyclopedia entries on a wikipedia based web application
 
 ## Encyclopedia App
 - The user can view the list of encyclopedia entries on the homepage with links to each of the entries (displayed in alphabetical order)

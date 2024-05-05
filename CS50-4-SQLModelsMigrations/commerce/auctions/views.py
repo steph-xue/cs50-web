@@ -249,7 +249,8 @@ def your_listings(request):
         # Displays the user's own listings 
         return render(request, "auctions/your_listings.html",
         {
-            "listings": sorted_owner_listings
+            "listings": sorted_owner_listings,
+            "listing_type": listing_type
         })
 
     # GET - displays all of the user's own listed auctions by default (active and inactive)
