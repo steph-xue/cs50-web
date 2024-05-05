@@ -81,7 +81,7 @@
     {% endif %}
     <br><br>
 
-    <div class="card" style="width: 90rem;">
+    <div class="card mx-auto" style="width: 80rem;">
         <div class="card-header">
           <h5>Comments</h5>
         </div>
@@ -112,7 +112,7 @@
         <form class="text-center" action="{% url 'add_comment' id=listing.id %}" method="post">
             {% csrf_token %}
             <label><strong>Add Comment: </strong></label>
-            <input class="col-9 ml-2" type="text" name="comment">
+            <input class="ml-2" style="width: 80rem;" type="text" name="comment">
             <button type="submit" class="btn btn-brown ml-2">Add Comment</button>
         </form>
     {% endif %}
