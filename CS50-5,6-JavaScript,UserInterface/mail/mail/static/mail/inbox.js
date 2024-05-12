@@ -56,11 +56,12 @@ function send_email() {
   .then(response => response.json())
   .then(result => {
 
-      // Print result (if errors or email sent successfully)
+      // Print result (shows if there are errors or if the email was sent successfully)
       console.log(result);
+
   });
 
-    // Redirects user to the sent inbox
-    load_mailbox('sent');
+  // Redirects user to the sent inbox
+  load_mailbox('sent');
 
 }
