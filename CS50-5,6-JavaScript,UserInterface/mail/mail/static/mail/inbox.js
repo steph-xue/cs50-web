@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
 
+  // Detects if the compose new email form was submitted to send an email
+  document.querySelector('#compose-form').addEventListener('submit', send_email);
+
   // By default, load the inbox
   load_mailbox('inbox');
 });
@@ -32,4 +35,14 @@ function load_mailbox(mailbox) {
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+}
+
+function send_email() {
+
+  // Gets information submitted in the compose email form
+  const recipients = document.querySelector('#compose-recipients').value
+  const subject = document.querySelector('#compose-subject').value
+  const body = document.querySelector('#compose-body').value
+
+
 }
