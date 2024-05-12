@@ -44,5 +44,21 @@ function send_email() {
   const subject = document.querySelector('#compose-subject').value
   const body = document.querySelector('#compose-body').value
 
+  // Send information to the backend to create and save new email objects (sent by the user)
+  fetch('/emails', {
+    method: 'POST',
+    body: JSON.stringify({
+        recipients: recipients,
+        subject: subject,
+        body: body
+    })
+  })
+  .then(response => response.json())
+  .then(result => {
+
+      // Print result (if errors or email sent successfully)
+      console.log(result);
+  });
+
 
 }
