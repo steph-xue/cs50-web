@@ -99,6 +99,14 @@ function view_mail(id) {
     // Add div element to the email details view
     document.querySelector('#email-details-view').append(emaildiv);
   });
+
+  // Mark email opened as read
+  fetch(`/emails/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+        read: true
+    })
+  })
 }
 
 
