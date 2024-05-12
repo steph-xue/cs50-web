@@ -1,3 +1,11 @@
 textarea {
     min-height: 400px;
 }
+
+.grey {
+    color: grey;
+}
+
+.blackborder {
+    border: 1px solid grey;
+}

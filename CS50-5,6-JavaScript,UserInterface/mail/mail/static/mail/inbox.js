@@ -61,6 +61,12 @@ function send_email(event) {
 
 
 function view_mail(id) {
+
+  // Show email details view and hide other views
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#email-details-view').style.display = 'block';
+  document.querySelector('#compose-view').style.display = 'none';
+
   pass
 }
 
@@ -89,9 +95,16 @@ function load_mailbox(mailbox) {
         // Create div element for each email to display in the mailbox
         const mail = document.createElement('div');
         mail.innerHTML = `
-          <p>${mail.sender}</p>
-          <p>${mail.subject}</p>
-          <p>${mail.timestamp}</p>
+          <div class="row blackborder">
+            <div class="col py-3">
+              <strong>${email.sender}</strong>
+            </div>
+            <div class="col-6 py-3">
+              ${email.subject}
+            </div>
+            <div class="col py-3 text-right grey">
+              ${email.timestamp}
+          </div>
         `;
 
         // Add event handler for when any mail is clicked on
