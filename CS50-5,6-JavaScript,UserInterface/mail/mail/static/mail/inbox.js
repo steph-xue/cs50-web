@@ -1,3 +1,4 @@
+//
 document.addEventListener('DOMContentLoaded', function() {
 
   // Use buttons to toggle between views
@@ -14,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+// Allows user to access the form to compose an email 
 function compose_email() {
 
   // Show compose view and hide other views
@@ -28,6 +30,7 @@ function compose_email() {
 }
 
 
+//
 function send_email(event) {
 
   event.preventDefault();
@@ -60,6 +63,7 @@ function send_email(event) {
 }
 
 
+//
 function view_mail(id) {
 
   // Show email details view and hide other views
@@ -75,9 +79,8 @@ function view_mail(id) {
     // Print email details to the console (shows if there are errors or returns email details if successful)
     console.log(email);
 
-    // Create div element to display details of the email selected
-    const emaildiv = document.createElement('div');
-    emaildiv.innerHTML = `
+    // Update email details view to display details of the email selected
+    document.querySelector('#email-details-view').innerHTML = `
       <div class="card">
         <div class="card-header py-3 font20">
           <strong>Subject: ${email.subject}</strong>
@@ -96,20 +99,48 @@ function view_mail(id) {
       </div>
     `;
 
-    // Add div element to the email details view
-    document.querySelector('#email-details-view').append(emaildiv);
-  });
+    // Mark email opened as read (if not read already)
+    if (email.read == false) {
+      fetch(`/emails/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            read: true
+        })
+      })
+    }
 
-  // Mark email opened as read
-  fetch(`/emails/${id}`, {
-    method: 'PUT',
-    body: JSON.stringify({
-        read: true
-    })
-  })
+    // Create button to reply to an email (redirects user to compose email that is prefilled)
+    const replybutton = document.createElement('button');
+    replybutton.innerHTML = 'Reply';
+    replybutton.classList.add('p-2', 'mt-2', 'mr-2', 'btn', 'btn-primary');
+    replybutton.addEventListener('click', function() {
+      compose_email;
+      document.querySelector('#')
+    });
+    document.querySelector('#email-details-view').append(replybutton);
+
+    // Create button to archive/unarchive email (redirects user to the archive mailbox)
+    const archivebutton = document.createElement('button');
+    archivebutton.innerHTML = email.archived ? 'Unarchive' : 'Archive';
+    archivebutton.className = email.archived ? 'btn-success' : 'btn-danger';
+    archivebutton.classList.add('p-2', 'mt-2', 'mr-2', 'btn');
+    archivebutton.addEventListener('click', function() {
+      fetch(`/emails/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            archived: !email.archived
+        })
+      })
+      .then( () => {
+        load_mailbox('archive')
+      })
+    });
+    document.querySelector('#email-details-view').append(archivebutton);
+  });
 }
 
 
+//
 function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
