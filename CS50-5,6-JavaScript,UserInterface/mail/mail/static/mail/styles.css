@@ -2,10 +2,18 @@ textarea {
     min-height: 400px;
 }
 
-.grey {
+.greytext {
     color: grey;
 }
 
-.blackborder {
+.greyborder {
     border: 1px solid grey;
+}
+
+.read {
+    background-color: rgb(226, 225, 225);
+}
+
+.unread{
+    background-color: white;
 }

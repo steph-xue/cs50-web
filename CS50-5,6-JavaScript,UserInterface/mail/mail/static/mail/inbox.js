@@ -94,18 +94,25 @@ function load_mailbox(mailbox) {
 
         // Create div element for each email to display in the mailbox
         const mail = document.createElement('div');
+        mail.classList.add('row', 'greyborder');
         mail.innerHTML = `
-          <div class="row blackborder">
-            <div class="col py-3">
-              <strong>${email.sender}</strong>
-            </div>
-            <div class="col-6 py-3">
-              ${email.subject}
-            </div>
-            <div class="col py-3 text-right grey">
-              ${email.timestamp}
+          <div class="col py-3">
+            <strong>${email.sender}</strong>
+          </div>
+          <div class="col-6 py-3">
+            ${email.subject}
+          </div>
+          <div class="col py-3 text-right greytext">
+            ${email.timestamp}
           </div>
         `;
+
+        // Determines if email background color is white (unread) or grey (read)
+        if (email.read == true) {
+          mail.classList.add('read');
+        } else {
+          mail.classList.add('unread');
+        }
 
         // Add event handler for when any mail is clicked on
         mail.addEventListener('click', function() {
