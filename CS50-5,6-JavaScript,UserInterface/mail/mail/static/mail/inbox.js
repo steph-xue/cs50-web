@@ -67,7 +67,38 @@ function view_mail(id) {
   document.querySelector('#email-details-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
 
-  pass
+  // Use the API route to get all the mail details based on which mail was selected
+  fetch(`/emails/${id}`)
+  .then(response => response.json())
+  .then(email => {
+
+    // Print email details to the console (shows if there are errors or returns email details if successful)
+    console.log(email);
+
+    // Create div element to display details of the email selected
+    const emaildiv = document.createElement('div');
+    emaildiv.innerHTML = `
+      <div class="card">
+        <div class="card-header py-3 font20">
+          <strong>Subject: ${email.subject}</strong>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <p><strong>From: </strong>${email.sender}</p>
+            <p><strong>To: </strong>${email.recipients.join(', ')} <p>
+            <p><strong>Timestamp: </strong>${email.timestamp}</p>
+          </li>
+          <li class="list-group-item">
+            <p><strong>Email Contents:</strong></p>
+            <p>${email.body}</p>
+          </li>
+        </ul>
+      </div>
+    `;
+
+    // Add div element to the email details view
+    document.querySelector('#email-details-view').append(emaildiv);
+  });
 }
 
 
@@ -79,7 +110,8 @@ function load_mailbox(mailbox) {
   document.querySelector('#compose-view').style.display = 'none';
 
   // Show the mailbox name
-  document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+  document.querySelector('#emails-view').innerHTML = `<h3 id="title">${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+  document.querySelector('#title').classList.add('pb-3');  
 
   // Use the API route to get all the mail from the mailbox chosen (inbox, sent, or archive)
   fetch(`/emails/${mailbox}`)
@@ -93,9 +125,9 @@ function load_mailbox(mailbox) {
       emails.forEach(email => {
 
         // Create div element for each email to display in the mailbox
-        const mail = document.createElement('div');
-        mail.classList.add('row', 'greyborder');
-        mail.innerHTML = `
+        const emaildiv = document.createElement('div');
+        emaildiv.classList.add('row', 'greyborder');
+        emaildiv.innerHTML = `
           <div class="col py-3">
             <strong>${email.sender}</strong>
           </div>
@@ -109,18 +141,18 @@ function load_mailbox(mailbox) {
 
         // Determines if email background color is white (unread) or grey (read)
         if (email.read == true) {
-          mail.classList.add('read');
+          emaildiv.classList.add('read');
         } else {
-          mail.classList.add('unread');
+          emaildiv.classList.add('unread');
         }
 
         // Add event handler for when any mail is clicked on
-        mail.addEventListener('click', function() {
-            view_mail(mail.id);
+        emaildiv.addEventListener('click', function() {
+            view_mail(email.id);
         });
 
         // Add each div element to the mailbox view section
-        document.querySelector('#emails-view').append(mail);
+        document.querySelector('#emails-view').append(emaildiv);
       });
   });
 }
