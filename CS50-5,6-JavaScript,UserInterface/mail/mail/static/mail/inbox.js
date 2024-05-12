@@ -114,10 +114,33 @@ function view_mail(id) {
     replybutton.innerHTML = 'Reply';
     replybutton.classList.add('p-2', 'mt-2', 'mr-2', 'btn', 'btn-primary');
     replybutton.addEventListener('click', function() {
-      compose_email;
-      document.querySelector('#')
+      compose_email();
+      document.querySelector('#compose-recipients').value = email.sender;
+      let subject = email.subject;
+      if (subject.split(' ', 1)[0] != 'Re:') {
+        subject = 'Re: ' + subject;
+      }
+      document.querySelector('#compose-subject').value = subject;
+      document.querySelector('#compose-body').value = `On ${email.timestamp} ${email.sender} wrote: ${email.body}`
     });
     document.querySelector('#email-details-view').append(replybutton);
+
+    // Create button to read/unread email (redirects user to the inbox mailbox)
+    const readbutton = document.createElement('button');
+    readbutton.innerHTML = email.read? 'Unread' : 'Read';
+    readbutton.classList.add('p-2', 'mt-2', 'mr-2', 'btn', 'btn-secondary');
+    readbutton.addEventListener('click', function() {
+      fetch(`/emails/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            read: !email.read
+        })
+      })
+      .then( () => {
+        load_mailbox('inbox')
+      })
+    });
+    document.querySelector('#email-details-view').append(readbutton);
 
     // Create button to archive/unarchive email (redirects user to the archive mailbox)
     const archivebutton = document.createElement('button');
