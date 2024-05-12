@@ -28,18 +28,6 @@ function compose_email() {
 }
 
 
-function load_mailbox(mailbox) {
-  
-  // Show the mailbox and hide other views
-  document.querySelector('#emails-view').style.display = 'block';
-  document.querySelector('#email-details-view').style.display = 'none';
-  document.querySelector('#compose-view').style.display = 'none';
-
-  // Show the mailbox name
-  document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
-}
-
-
 function send_email(event) {
 
   event.preventDefault();
@@ -61,7 +49,7 @@ function send_email(event) {
   .then(response => response.json())
   .then(result => {
 
-    // Print result (shows if there are errors or if the email was sent successfully)
+    // Print result to the console (shows if there are errors or if the email was sent successfully)
     console.log(result);
 
     // Redirects user to the sent inbox
@@ -69,4 +57,50 @@ function send_email(event) {
 
   });
 
+}
+
+
+function view_mail(id) {
+  pass
+}
+
+
+function load_mailbox(mailbox) {
+  
+  // Show the mailbox and hide other views
+  document.querySelector('#emails-view').style.display = 'block';
+  document.querySelector('#email-details-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'none';
+
+  // Show the mailbox name
+  document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
+  // Use the API route to get all the mail from the mailbox chosen (inbox, sent, or archive)
+  fetch(`/emails/${mailbox}`)
+  .then(response => response.json())
+  .then(emails => {
+
+      // Print emails to the console (shows if there are errors or returns all email objects if successful)
+      console.log(emails);
+
+      // Iterate through each of the emails
+      emails.forEach(email => {
+
+        // Create div element for each email to display in the mailbox
+        const mail = document.createElement('div');
+        mail.innerHTML = `
+          <p>${mail.sender}</p>
+          <p>${mail.subject}</p>
+          <p>${mail.timestamp}</p>
+        `;
+
+        // Add event handler for when any mail is clicked on
+        mail.addEventListener('click', function() {
+            view_mail(mail.id);
+        });
+
+        // Add each div element to the mailbox view section
+        document.querySelector('#emails-view').append(mail);
+      });
+  });
 }
