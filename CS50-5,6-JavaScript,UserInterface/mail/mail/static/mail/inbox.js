@@ -60,5 +60,7 @@ function send_email() {
       console.log(result);
   });
 
+    // Redirects user to the sent inbox
+    load_mailbox('sent');
 
 }
