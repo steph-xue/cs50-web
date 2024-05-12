@@ -37,12 +37,14 @@ function load_mailbox(mailbox) {
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 }
 
-function send_email() {
+function send_email(event) {
+
+  event.preventDefault();
 
   // Gets information submitted in the compose email form
-  const recipients = document.querySelector('#compose-recipients').value
-  const subject = document.querySelector('#compose-subject').value
-  const body = document.querySelector('#compose-body').value
+  const recipients = document.querySelector('#compose-recipients').value;
+  const subject = document.querySelector('#compose-subject').value;
+  const body = document.querySelector('#compose-body').value;
 
   // Send information to the backend to create and save new email objects (sent by the user)
   fetch('/emails', {
@@ -56,12 +58,12 @@ function send_email() {
   .then(response => response.json())
   .then(result => {
 
-      // Print result (shows if there are errors or if the email was sent successfully)
-      console.log(result);
+    // Print result (shows if there are errors or if the email was sent successfully)
+    console.log(result);
+
+    // Redirects user to the sent inbox
+    load_mailbox('sent');
 
   });
-
-  // Redirects user to the sent inbox
-  load_mailbox('sent');
 
 }
