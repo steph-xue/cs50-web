@@ -12,4 +12,4 @@ class Post(models.Model):
     date_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Post {self.id} was posted by {self.user.username} on {self.date_time.strftime('%m/%d/%Y, %H:%M:%S')}"
+        return f"Post {self.id} was posted by {self.user.username.capitalize()} on {self.date_time.strftime('%m/%d/%Y, %H:%M:%S')}"
