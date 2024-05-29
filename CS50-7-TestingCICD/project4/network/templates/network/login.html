@@ -5,7 +5,7 @@
     <h2 class="px-5 py-2">Login</h2>
 
     {% if message %}
-        <div>{{ message }}</div>
+        <div class="px-5 py-2">{{ message }}</div>
     {% endif %}
 
     <form class="px-5 py-2" action="{% url 'login' %}" method="post">
@@ -16,9 +16,9 @@
         <div class="form-group">
             <input class="form-control" type="password" name="password" placeholder="Password">
         </div>
-        <input class="btn btn-primary" type="submit" value="Login">
+        <input class="btn btn-brown" type="submit" value="Login">
     </form>
 
-    <div class="px-5 py-2">Don't have an account? <a href="{% url 'register' %}">Register here.</a></div>
+    <div class="px-5 py-2">Don't have an account? <a class="brownlink" href="{% url 'register' %}">Register here.</a></div>
 
 {% endblock %}
