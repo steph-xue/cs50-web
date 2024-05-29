@@ -11,10 +11,10 @@
     <form class="px-5 py-2" action="{% url 'create' %}" method="post">
         {% csrf_token %}
         <div class="form-group">
-            <label for="exampleFormControlTextarea1">Post Content</label>
-            <textarea class="form-control" id="" rows="5"></textarea>
+            <label>Post Content:</label>
+            <textarea class="form-control" name="content" rows="5"></textarea>
           </div>
-        <input class="btn btn-primary" type="submit" value="Post">
+        <input class="btn btn-brown" type="submit" value="Post">
     </form>
 
 {% endblock %}
