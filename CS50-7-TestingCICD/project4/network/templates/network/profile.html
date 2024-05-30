@@ -14,22 +14,22 @@
     </ul>
 
     {% if user.is_authenticated %}
-        {% if user is not profile_user %}
+        {% if user != profile_user %}
             {% if is_following %}
-                <form action="{% url 'unfollow' user_id=profile_user.id %}" method="post">
+                <form action="{% url 'unfollow' %}" method="post">
                     {% csrf_token %}
                     <div class="form-group">
-                        <input class="form-control" type="hidden" name="unfollow" value="profile_user.id">
+                        <input class="form-control" type="hidden" name="unfollow" value="{{ profile_user.id }}">
                     </div>
                     <div class="text-center adjust">
                         <input class="btn btn-brown justify-content-center" type="submit" value="Unfollow">
                     </div>
                 </form>
             {% else %}
-                <form action="{% url 'follow' user_id=profile_user.id %}" method="post">
+                <form action="{% url 'follow' %}" method="post">
                     {% csrf_token %}
                     <div class="form-group">
-                        <input class="form-control" type="hidden" name="follow" value="profile_user.id">
+                        <input class="form-control" type="hidden" name="follow" value="{{ profile_user.id }}">
                     </div>
                     <div class="text-center adjust">
                         <input class="btn btn-brown justify-content-center" type="submit" value="Follow">

@@ -139,9 +139,12 @@ def profile(request, user_id):
     following = Follow.objects.filter(user_follower=profile_user)
 
     # Determines if the currrent user is following the user's profile
-    if request.user in followers:
-        is_following = True
-    else:
+    try:
+        if len(followers.filter(user_follower=request.user)) != 0:
+            is_following = True
+        else:
+            is_following = False
+    except:
         is_following = False
 
     # Directs user to the specific user's profile with all posts ordered in reverse chronological order
@@ -153,10 +156,39 @@ def profile(request, user_id):
         "is_following": is_following
     })
 
-# 
-def follow(request, user_id):
-    pass
 
-# 
-def unfollow(request, user_id):
-    pass
+# Allows the user to follow the profile
+def follow(request):
+
+    # Gets the current user and the profile's user
+    current_user = request.user
+    profile_user_id = int(request.POST["follow"])
+    profile_user = User.objects.get(pk=profile_user_id)
+
+    # Create and save a follow object into the database where the current user follows the profile's user
+    follow = Follow(
+        user_follower=current_user,
+        user_following=profile_user
+    )
+    follow.save()
+
+    # Redirects the user to the same profile
+    user_id = profile_user.id
+    return HttpResponseRedirect(reverse("profile", kwargs={'user_id': user_id}))
+
+
+# Allows the user to unfollow the profile
+def unfollow(request):
+
+    # Gets the current user and the profile's user
+    current_user = request.user
+    profile_user_id = int(request.POST["unfollow"])
+    profile_user = User.objects.get(pk=profile_user_id)
+
+    # Delete the follow object from the database so that the current user unfollows the profile's user
+    follow = Follow.objects.get(user_follower=current_user, user_following=profile_user)
+    follow.delete()
+
+    # Redirects the user to the same profile
+    user_id = profile_user.id
+    return HttpResponseRedirect(reverse("profile", kwargs={'user_id': user_id}))
