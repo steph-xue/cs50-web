@@ -192,3 +192,32 @@ def unfollow(request):
     # Redirects the user to the same profile
     user_id = profile_user.id
     return HttpResponseRedirect(reverse("profile", kwargs={'user_id': user_id}))
+
+
+# Directs the user to the following page to view posts from only users they follow
+def following(request):
+
+    # Gets all Follow objects where the user is a follower of another user
+    following = Follow.objects.filter(user_follower=request.user)
+
+    # Gets all posts ordered in reverse chronological order
+    all_posts = Post.objects.all().order_by("id").reverse()
+
+    # Create an empty list of following posts to add posts to
+    following_posts = []
+
+    # Check if the user of the post matches someone the current user is following and add it to the following posts list
+    for post in all_posts:
+        for follow in following:
+            if follow.user_following == post.user:
+                following_posts.append(post)
+
+    # Pagination - determines which page to show and only allow maximum 10 posts to be displayed on each page
+    paginator = Paginator(following_posts, 10)
+    page_number = request.GET.get("page")
+    page_posts = paginator.get_page(page_number)
+
+    # Directs user to the homepage with all posts ordered in reverse chronological order
+    return render(request, "network/following.html", {
+        "page_posts": page_posts
+    })
