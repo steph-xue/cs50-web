@@ -4,12 +4,19 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import User, Post
 
 
 # Directs the user to the homepage with all posts
 def index(request):
-    return render(request, "network/index.html")
+
+    # Gets all posts ordered in reverse chronological order
+    all_posts = Post.objects.all().order_by("id").reverse()
+
+    # Directs user to the homepage with all posts ordered in reverse chronological order
+    return render(request, "network/index.html", {
+        "all_posts": all_posts
+    })
 
 
 # Logs the user in
@@ -76,6 +83,7 @@ def register(request):
         return render(request, "network/register.html")
 
 
+# Allows the user to create a new post
 def create(request):
 
     # POST - Allows the user to submit new post information
@@ -92,7 +100,7 @@ def create(request):
             })
 
         # Creates a new post and save it in the database
-        post = POST.objects.create_post(
+        post = Post(
             content = content,
             user = current_user
         )

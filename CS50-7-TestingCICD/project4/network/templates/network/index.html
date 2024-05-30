@@ -1,5 +1,24 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    TODO
+
+    <h2 class="px-5 pt-4 pb-3">All Posts</h2>
+
+    {% if message %}
+        <div class="px-5 py-2">{{ message }}</div>
+    {% endif %}
+
+    {% for post in all_posts %}
+        <div class="p-3">
+            <div class="card">
+                <h5 class="card-header bg-brown">{{ post.user.username | capfirst }}</h5>
+                <div class="card-body">
+                <p class="card-text">{{ post.content }}</p>
+                <p class="card-text"><i>{{ post.date_time }}</i></p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+
 {% endblock %}
