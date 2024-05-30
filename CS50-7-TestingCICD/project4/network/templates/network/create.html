@@ -2,19 +2,21 @@
 
 {% block body %}
 
-    <h2 class="px-5 pt-4 pb-3">Create New Post</h2>
+    <h2 class="px-5 pt-4 pb-3 mt-3 text-center">Create New Post</h2>
 
     {% if message %}
         <div class="px-5 py-2">{{ message }}</div>
     {% endif %}
 
-    <form class="px-5 py-2" action="{% url 'create' %}" method="post">
+    <form class="px-5 py-2 col-8 offset-2" action="{% url 'create' %}" method="post">
         {% csrf_token %}
         <div class="form-group">
-            <label>Post Content:</label>
-            <textarea class="form-control" name="content" rows="5"></textarea>
+            <label><b>Post Content:</b></label>
+            <textarea class="form-control" name="content" rows="10"></textarea>
           </div>
-        <input class="btn btn-brown" type="submit" value="Post">
+          <div class="text-center">
+            <input class="btn btn-brown justify-content-center" type="submit" value="Post">
+        </div>
     </form>
 
 {% endblock %}

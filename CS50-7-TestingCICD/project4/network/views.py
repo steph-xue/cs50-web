@@ -134,8 +134,14 @@ def profile(request, user_id):
     page_number = request.GET.get("page")
     page_posts = paginator.get_page(page_number)
 
+    # Gets all specific user's followers and the people who they are following
+    followers = Follow.objects.filter(user_following=profile_user)
+    following = Follow.objects.filter(user_follower=profile_user)
+
     # Directs user to the specific user's profile with all posts ordered in reverse chronological order
     return render(request, "network/profile.html", {
         "page_posts": page_posts,
-        "profile_user": profile_user
+        "profile_user": profile_user,
+        "followers": followers,
+        "following": following
     })

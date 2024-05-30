@@ -2,16 +2,19 @@
 
 {% block body %}
 
-    <h2 class="px-5 pt-4 pb-3">{{ profile_user.username | capfirst }}</h2>
+    <h2 class="px-5 pt-4 pb-3 mt-3 text-center">{{ profile_user.username | capfirst }}</h2>
 
-    <ul class="row d-flex justify-content-centre">
+    <ul class="row d-flex justify-content-center">
         <li class="col-2 follow-border">
-            Followers: 
+            Followers: {{ followers.count }}
         </li>
         <li class="col-2 follow-border">
-            Following:
+            Following: {{ following.count }}
         </li>
     </ul>
+
+    {% if user is not profile_user %}
+    {% endif %}
 
     {% for post in page_posts %}
         <div class="px-4 py-3">
