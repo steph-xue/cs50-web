@@ -32,3 +32,8 @@
     margin: 5px;
     list-style-type: None;
 }
+
+.adjust {
+    margin-top: -5px;
+    margin-bottom: 5px;
+}

@@ -138,10 +138,25 @@ def profile(request, user_id):
     followers = Follow.objects.filter(user_following=profile_user)
     following = Follow.objects.filter(user_follower=profile_user)
 
+    # Determines if the currrent user is following the user's profile
+    if request.user in followers:
+        is_following = True
+    else:
+        is_following = False
+
     # Directs user to the specific user's profile with all posts ordered in reverse chronological order
     return render(request, "network/profile.html", {
         "page_posts": page_posts,
         "profile_user": profile_user,
         "followers": followers,
-        "following": following
+        "following": following,
+        "is_following": is_following
     })
+
+# 
+def follow(request, user_id):
+    pass
+
+# 
+def unfollow(request, user_id):
+    pass
