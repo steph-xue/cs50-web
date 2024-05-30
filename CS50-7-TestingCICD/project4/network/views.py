@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.core.paginator import Paginator
 
 from .models import User, Post
 
@@ -13,9 +14,14 @@ def index(request):
     # Gets all posts ordered in reverse chronological order
     all_posts = Post.objects.all().order_by("id").reverse()
 
+    # Pagination - determines which page to show and only allow maximum 10 posts to be displayed on each page
+    paginator = Paginator(all_posts, 10)
+    page_number = request.GET.get("page")
+    page_posts = paginator.get_page(page_number)
+
     # Directs user to the homepage with all posts ordered in reverse chronological order
     return render(request, "network/index.html", {
-        "all_posts": all_posts
+        "page_posts": page_posts
     })
 
 
