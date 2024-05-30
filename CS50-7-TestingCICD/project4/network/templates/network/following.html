@@ -12,9 +12,13 @@
                     <p class="card-text">{{ post.content }}</p>
                     <p class="card-text"><i>{{ post.date_time }}</i></p>
                 </div>
-                <div class="text-center">
-                    <input class="btn btn-brown justify-content-center" type="submit" value="Edit">
-                </div>
+                {% if user.is_authenticated %}
+                    {% if user == post.user %}
+                        <div class="d-flex justify-content-aroud pl-2 pb-2">
+                            <input class="btn btn-brown" type="submit" value="Edit">
+                        </div>
+                    {% endif %}
+                {% endif %}
             </div>
         </div>
     {% endfor %}
