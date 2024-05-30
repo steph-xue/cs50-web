@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
 
 from .models import User, Post
 
@@ -89,6 +90,7 @@ def register(request):
         return render(request, "network/register.html")
 
 
+@login_required
 # Allows the user to create a new post
 def create(request):
 
@@ -118,3 +120,22 @@ def create(request):
     # GET - Directs the user to the create new post page
     else:
         return render(request, "network/create.html")
+    
+
+# Directs the user to a specific user's profile
+def profile(request, user_id):
+
+    # Gets all posts of the specific user ordered in reverse chronological order
+    profile_user = User.objects.get(pk=user_id)
+    user_posts = Post.objects.filter(user=profile_user).order_by("id").reverse()
+
+    # Pagination - determines which page to show and only allow maximum 10 posts to be displayed on each page
+    paginator = Paginator(user_posts, 10)
+    page_number = request.GET.get("page")
+    page_posts = paginator.get_page(page_number)
+
+    # Directs user to the specific user's profile with all posts ordered in reverse chronological order
+    return render(request, "network/profile.html", {
+        "page_posts": page_posts,
+        "profile_user": profile_user
+    })

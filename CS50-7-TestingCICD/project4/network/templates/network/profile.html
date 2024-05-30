@@ -2,7 +2,7 @@
 
 {% block body %}
 
-    <h2 class="px-5 pt-4 pb-3">All Posts</h2>
+    <h2 class="px-5 pt-4 pb-3">{{ profile_user.username | capfirst }}</h2>
 
     {% for post in page_posts %}
         <div class="px-4 py-3">
