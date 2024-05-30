@@ -9,8 +9,11 @@
             <div class="card">
                 <h5 class="card-header bg-brown"><a class="blacklink" href="{% url 'profile' user_id=post.user.id %}">{{ post.user.username | capfirst }}</a></h5>
                 <div class="card-body">
-                <p class="card-text">{{ post.content }}</p>
-                <p class="card-text"><i>{{ post.date_time }}</i></p>
+                    <p class="card-text">{{ post.content }}</p>
+                    <p class="card-text"><i>{{ post.date_time }}</i></p>
+                </div>
+                <div class="text-center">
+                    <input class="btn btn-brown justify-content-center" type="submit" value="Edit">
                 </div>
             </div>
         </div>
