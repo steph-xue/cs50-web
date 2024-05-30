@@ -25,3 +25,10 @@
 .brown-text {
     color: #8a5626 !important;
 }
+
+.follow-border {
+    border: solid 1px rgb(182, 180, 180);
+    padding: 10px;
+    margin: 5px;
+    list-style-type: None;
+}
