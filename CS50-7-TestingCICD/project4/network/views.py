@@ -274,7 +274,7 @@ def add_like(request, post_id):
     )
     new_like.save()
 
-    # Returns a json response to the use to tell them if adding the like was successful
+    # Returns a json response to the user to tell them if adding the like was successful
     return JsonResponse({"message": "Like added successfully"})
 
 
@@ -290,5 +290,28 @@ def remove_like(request, post_id):
     like = Like.objects.get(post=post, user=current_user)
     like.delete()
 
-    # Returns a json response to the use to tell them if removing the like was successful
+    # Returns a json response to the user to tell them if removing the like was successful
     return JsonResponse({"message": "Like removed successfully"})
+
+
+@login_required
+# Allows the user to retrieve their own like status of a post
+def like_status(request, post_id):
+    
+    # Gets the current user and the post to retrieve their like status from
+    current_user = request.user
+    post = Post.objects.get(pk=post_id)
+
+    # Determines if the user has liked the post (if a like object exists for the user and post)
+    liked = False
+    try:
+        like = Like.objects.get(post=post, user=current_user)
+        if like is not None:
+            liked = True
+        else:
+            liked = False
+    except:
+        liked = False
+
+    # Returns a json responsep to show the user has liked the post
+    return JsonResponse({"liked": liked})

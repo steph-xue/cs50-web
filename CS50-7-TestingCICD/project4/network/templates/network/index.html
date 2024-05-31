@@ -49,14 +49,20 @@
                     {% else %}
                         {% if post.id in your_liked_post_ids %}
                             <div class="row d-flex justify-content-aroud pl-4 pb-2">
-                                <button type="button" class="btn btn-like mr-2" onclick="like_handler({{ post.id }}, {{ your_liked_post_ids }})" id="{{ post.id }}">
-                                    <i class="fa fa-thumbs-up" style="font-size:18px"></i> Remove Like
+                                <button type="button" class="btn btn-like mr-2 px-4" onclick="like_handler({{ post.id }})">
+                                    <div class="row">
+                                        <i class="fa fa-thumbs-up pr-2" style="font-size:18px"></i>
+                                        <div id="{{ post.id }}"> Remove Like </div>
+                                    </div>
                                 </button>
                             </div>
                         {% else %}
                             <div class="row d-flex justify-content-aroud pl-4 pb-2"m>
-                                <button type="button" class="btn btn-like mr-2" onclick="like_handler({{ post.id }}, {{ your_liked_post_ids }})" id="{{ post.id }}">
-                                    <i class="fa fa-thumbs-up" style="font-size:18px"></i> Like
+                                <button type="button" class="btn btn-like mr-2 px-4" onclick="like_handler({{ post.id }})">
+                                    <div class="row">
+                                        <i class="fa fa-thumbs-up pr-2" style="font-size:18px"></i>
+                                        <div id="{{ post.id }}"> Like </div>
+                                    </div>
                                 </button>
                             </div>
                         {% endif %}

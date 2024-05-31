@@ -1,9 +1,4 @@
-// Waits for the entire document to load before running any events
-document.addEventListener('DOMContentLoaded', function() {
-    load()
-})
-
-// Allows to retrieve cookies
+// Allows retrieval of cookies
 function get_cookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -38,43 +33,44 @@ function edit(id) {
 
 
 // Allows the user to add or remove a like from a post
-function like_handler(id, your_liked_post_ids) {
+function like_handler(id) {
 
-    // Get the like button to change and clear it out
-    const btn = document.querySelector(`#${id}`);
-    btn.innerHTML = "";
+    // Get the like button so we can eventually change it
+    const btn = document.getElementById(`${id}`);
 
-    // Checks if the user has liked the post
-    let liked = your_liked_post_ids.indexOf(id) >= 0;
+    // Using an API, check the user's like status of the post
+    fetch(`/like_status/${id}`)
+    .then(response => response.json())
+    .then(result => {
 
-    // If the post has not yet been liked, like the post
-    if (!liked) {
+        // Get the user's like status of the post
+        let liked = result["liked"];
 
-        // Using an API, change the post to add a like and save it to the database
-        fetch(`/add_like/${id}`)
-        .then(response => response.json())
-        .then(result => {
+        // If the post has not yet been liked, like the post
+        if (!liked) {
 
-            // Prints the results (if adding the like was successful) to the console
-            console.log(result);
-            btn.innerHTML = " Remove Like";
-        })
+            // Using an API, change the post to add a like and save it to the database
+            fetch(`/add_like/${id}`)
+            .then(response => response.json())
+            .then(result => {
 
-    // If the post has already been liked, remove the like from the post
-    } else {
-        // Using an API, change the post to remove the like and save it to the database
-        fetch(`/remove_like/${id}`)
-        .then(response => response.json())
-        .then(result => {
+                // Prints the results (if adding the like was successful) to the console
+                console.log(result);
+                btn.innerHTML = " Remove Like";
+            })
 
-            // Prints the results (if removing the like was successful) to the console
-            console.log(result);
-            btn.innerHTML = " Like";
-        })
-    }
+        // If the post has already been liked, remove the like from the post
+        } else {
+            // Using an API, change the post to remove the like and save it to the database
+            fetch(`/remove_like/${id}`)
+            .then(response => response.json())
+            .then(result => {
 
-    // After adding/removing the like, change the variable liked accordingly
-    liked = !liked;
-
+                // Prints the results (if removing the like was successful) to the console
+                console.log(result);
+                btn.innerHTML = " Like";
+            })
+        }
+    })
 }
 
