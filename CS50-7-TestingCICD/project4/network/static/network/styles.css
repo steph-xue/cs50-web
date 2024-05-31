@@ -7,11 +7,19 @@
 }
 
 .btn-like {
-    background-color: #c8d6c4 !important;
+    background-color: #dae9d6 !important;
 }
 
 .btn-like:hover {
-    background-color: #b3cbac !important;
+    background-color: #c5dfbe !important;
+}
+
+.btn-dislike {
+    background-color: #e2ccc7 !important;
+}
+
+.btn-dislike:hover {
+    background-color: #ecc2b9 !important;
 }
 
 .brownlink {
@@ -48,4 +56,8 @@
 
 .grey {
     color: grey !important;
+}
+
+.adjust_card {
+    padding-top: -50px;
 }
