@@ -7,7 +7,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 import json
 
-from .models import User, Post, Follow, Like
+from .models import User, Post, Follow, Like, Dislike
 
 
 # Directs the user to the homepage with all posts
@@ -28,6 +28,18 @@ def index(request):
     except:
         your_liked_post_ids = []
 
+    # Gets all Dislike objects
+    all_dislikes = Dislike.objects.all()
+
+    # Create a list of all the post id's you've disliked
+    your_disliked_post_ids = []
+    try:
+        for dislike in all_dislikes:
+            if dislike.user.id == request.user.id:
+                your_disliked_post_ids.append(dislike.post.id)
+    except:
+        your_disliked_post_ids = []
+
     # Pagination - determines which page to show and only allow maximum 10 posts to be displayed on each page
     paginator = Paginator(all_posts, 10)
     page_number = request.GET.get("page")
@@ -36,7 +48,8 @@ def index(request):
     # Directs user to the homepage with all posts ordered in reverse chronological order
     return render(request, "network/index.html", {
         "page_posts": page_posts,
-        "your_liked_post_ids": your_liked_post_ids
+        "your_liked_post_ids": your_liked_post_ids,
+        "your_disliked_post_ids": your_disliked_post_ids
     })
 
 
@@ -295,7 +308,7 @@ def remove_like(request, post_id):
 
 
 @login_required
-# Allows the user to retrieve their own like status of a post
+# Allows the user to retrieve their own like status of a post 
 def like_status(request, post_id):
     
     # Gets the current user and the post to retrieve their like status from
@@ -313,5 +326,99 @@ def like_status(request, post_id):
     except:
         liked = False
 
-    # Returns a json responsep to show the user has liked the post
+    count = 0
+
+    # Returns a json response to show the user has liked the post
     return JsonResponse({"liked": liked})
+
+
+@login_required
+# Allows the user to retrieve the total number of likes of a post
+def like_count(request, post_id):
+    
+    # Gets the post to retrieve the total number of likes from
+    post = Post.objects.get(pk=post_id)
+
+    # Gets all the like objects of the post
+    likes = Like.objects.filter(post=post)
+
+    # Determines how many likes the post has
+    count = len(likes)
+
+    # Returns a json response to show the user the total number of likes of the post
+    return JsonResponse({"count": count})
+
+
+@login_required
+# Allows the user dislike a post
+def add_dislike(request, post_id):
+
+    # Gets the current user and the post they disliked
+    current_user = request.user
+    post = Post.objects.get(pk=post_id)
+
+    # Creates and saves a dislike object for the user and the post they disliked
+    new_dislike = Dislike(
+        post=post,
+        user=current_user
+    )
+    new_dislike.save()
+
+    # Returns a json response to the user to tell them if adding the dislike was successful
+    return JsonResponse({"message": "Dislike added successfully"})
+
+
+@login_required
+# Allows the user remove a dislike from a post
+def remove_dislike(request, post_id):
+    
+    # Gets the current user and the post to remove the dislike from
+    current_user = request.user
+    post = Post.objects.get(pk=post_id)
+
+    # Deletes the dislike object for the user and the post they previously disliked
+    dislike = Dislike.objects.get(post=post, user=current_user)
+    dislike.delete()
+
+    # Returns a json response to the user to tell them if removing the dislike was successful
+    return JsonResponse({"message": "Dislike removed successfully"})
+
+
+@login_required
+# Allows the user to retrieve their own dislike status of a post
+def dislike_status(request, post_id):
+    
+    # Gets the current user and the post to retrieve their dislike status from
+    current_user = request.user
+    post = Post.objects.get(pk=post_id)
+
+    # Determines if the user has disliked the post (if a dislike object exists for the user and post)
+    disliked = False
+    try:
+        dislike = Dislike.objects.get(post=post, user=current_user)
+        if dislike is not None:
+            disliked = True
+        else:
+            disliked = False
+    except:
+        disliked = False
+
+    # Returns a json response to show the user has disliked the post
+    return JsonResponse({"disliked": disliked})
+
+
+@login_required
+# Allows the user to retrieve the total number of dislikes of a post
+def dislike_count(request, post_id):
+    
+    # Gets the post to retrieve the total number of dislikes from
+    post = Post.objects.get(pk=post_id)
+
+    # Gets all the dislike objects of the post
+    dislikes = Dislike.objects.filter(post=post)
+
+    # Determines how many dislikes the post has
+    count = len(dislikes)
+
+    # Returns a json response to show the user the total number of dislikes of the post
+    return JsonResponse({"count": count})

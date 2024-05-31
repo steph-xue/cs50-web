@@ -12,11 +12,13 @@
                     <p class="card-text mt-0 mb-2" id="content_{{ post.id }}">{{ post.content }}</p>
                     <p class="card-text grey mt-2 mb-1"><i>{{ post.date_time }}</i></p>
                     <div class="row pl-3 mt-2">
-                        <div class="pr-4">
-                            <i class="fa fa-thumbs-up" style="font-size:18px"></i> {{ post.like_post.count }}
+                        <div class="pl-3 pr-4 row">
+                            <i class="fa fa-thumbs-up" style="font-size:18px"></i>
+                            <div class="px-1" id="like_count_{{ post.id }}"> {{ post.like_post.count }}</div>
                         </div>
-                        <div>
-                            <i class="fa fa-thumbs-down" style="font-size:18px"></i> 0
+                        <div class="pl-3 row">
+                            <i class="fa fa-thumbs-down" style="font-size:18px"></i>
+                            <div class="px-1" id="dislike_count_{{ post.id }}"> {{ post.dislike_post.count }}</div>
                         </div>
                     </div>
                 </div>
@@ -47,25 +49,46 @@
                             </div>
                         </div>
                     {% else %}
-                        {% if post.id in your_liked_post_ids %}
-                            <div class="row d-flex justify-content-aroud pl-4 pb-2">
-                                <button type="button" class="btn btn-like mr-2 px-4" onclick="like_handler({{ post.id }})">
-                                    <div class="row">
-                                        <i class="fa fa-thumbs-up pr-2" style="font-size:18px"></i>
-                                        <div id="{{ post.id }}"> Remove Like </div>
-                                    </div>
-                                </button>
-                            </div>
-                        {% else %}
-                            <div class="row d-flex justify-content-aroud pl-4 pb-2"m>
-                                <button type="button" class="btn btn-like mr-2 px-4" onclick="like_handler({{ post.id }})">
-                                    <div class="row">
-                                        <i class="fa fa-thumbs-up pr-2" style="font-size:18px"></i>
-                                        <div id="{{ post.id }}"> Like </div>
-                                    </div>
-                                </button>
-                            </div>
-                        {% endif %}
+                        <div class="row pl-3">
+                            {% if post.id in your_liked_post_ids %}
+                                <div class="row d-flex justify-content-aroud pl-4 pb-2 pr-2">
+                                    <button type="button" class="btn btn-like mr-2 px-4" onclick="like_handler({{ post.id }})">
+                                        <div class="row">
+                                            <i class="fa fa-thumbs-up pr-2" style="font-size:18px"></i>
+                                            <div id="like_{{ post.id }}"> Remove Like </div>
+                                        </div>
+                                    </button>
+                                </div>
+                            {% else %}
+                                <div class="row d-flex justify-content-aroud pl-4 pb-2 pr-2">
+                                    <button type="button" class="btn btn-like mr-2 px-4" onclick="like_handler({{ post.id }})">
+                                        <div class="row">
+                                            <i class="fa fa-thumbs-up pr-2" style="font-size:18px"></i>
+                                            <div id="like_{{ post.id }}"> Like </div>
+                                        </div>
+                                    </button>
+                                </div>
+                            {% endif %}
+                            {% if post.id in your_disliked_post_ids %}
+                                <div class="row d-flex justify-content-aroud pl-4 pb-2">
+                                    <button type="button" class="btn btn-dislike mr-2 px-4" onclick="dislike_handler({{ post.id }})">
+                                        <div class="row">
+                                            <i class="fa fa-thumbs-down pr-2" style="font-size:18px"></i>
+                                            <div id="dislike_{{ post.id }}"> Remove Dislike </div>
+                                        </div>
+                                    </button>
+                                </div>
+                            {% else %}
+                                <div class="row d-flex justify-content-aroud pl-4 pb-2"m>
+                                    <button type="button" class="btn btn-dislike mr-2 px-4" onclick="dislike_handler({{ post.id }})">
+                                        <div class="row">
+                                            <i class="fa fa-thumbs-down pr-2" style="font-size:18px"></i>
+                                            <div id="dislike_{{ post.id }}"> Dislike </div>
+                                        </div>
+                                    </button>
+                                </div>
+                            {% endif %}
+                        </div>
                     {% endif %}
                 {% endif %}
             </div>

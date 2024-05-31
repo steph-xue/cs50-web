@@ -23,10 +23,18 @@ class Follow(models.Model):
     def __str__(self):
         return f"{self.user_follower.username.capitalize()} is now following {self.user_following.username.capitalize()}"
     
-    
+
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="like_user")
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="like_post")
 
     def __str__(self):
         return f"{self.user.username.capitalize()} liked post {self.post.id}"
+    
+
+class Dislike(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="dislike_user")
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="dislike_post")
+
+    def __str__(self):
+        return f"{self.user.username.capitalize()} disliked post {self.post.id}"

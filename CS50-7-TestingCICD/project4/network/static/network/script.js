@@ -35,9 +35,6 @@ function edit(id) {
 // Allows the user to add or remove a like from a post
 function like_handler(id) {
 
-    // Get the like button so we can eventually change it
-    const btn = document.getElementById(`${id}`);
-
     // Using an API, check the user's like status of the post
     fetch(`/like_status/${id}`)
     .then(response => response.json())
@@ -56,7 +53,15 @@ function like_handler(id) {
 
                 // Prints the results (if adding the like was successful) to the console
                 console.log(result);
-                btn.innerHTML = " Remove Like";
+                document.getElementById(`like_${id}`).innerHTML = " Remove Like";
+
+                // Using an API, determine the number of likes the post has to update the post's likes directly
+                fetch(`/like_count/${id}`)
+                .then(response => response.json())
+                .then(result => {
+                    like_count = parseInt(result["count"])
+                    document.getElementById(`like_count_${id}`).innerHTML = ` ${like_count}`;
+                })
             })
 
         // If the post has already been liked, remove the like from the post
@@ -68,9 +73,72 @@ function like_handler(id) {
 
                 // Prints the results (if removing the like was successful) to the console
                 console.log(result);
-                btn.innerHTML = " Like";
+                document.getElementById(`like_${id}`).innerHTML = " Like";
+
+                // Using an API, determine the number of likes the post has to update the post's likes directly
+                fetch(`/like_count/${id}`)
+                .then(response => response.json())
+                .then(result => {
+                    like_count = parseInt(result["count"])
+                    document.getElementById(`like_count_${id}`).innerHTML = ` ${like_count}`;
+                })
             })
         }
     })
 }
 
+
+// Allows the user to add or remove a dislike from a post
+function dislike_handler(id) {
+
+    // Using an API, check the user's like status of the post
+    fetch(`/dislike_status/${id}`)
+    .then(response => response.json())
+    .then(result => {
+
+        // Get the user's dislike status of the post
+        let disliked = result["disliked"];
+
+        // If the post has not yet been disliked, dislike the post
+        if (!disliked) {
+
+            // Using an API, change the post to add a dislike and save it to the database
+            fetch(`/add_dislike/${id}`)
+            .then(response => response.json())
+            .then(result => {
+
+                // Prints the results (if adding the dislike was successful) to the console
+                console.log(result);
+                document.getElementById(`dislike_${id}`).innerHTML = " Remove Dislike";
+
+                // Using an API, determine the number of dislikes the post has to update the post's dislikes directly
+                fetch(`/dislike_count/${id}`)
+                .then(response => response.json())
+                .then(result => {
+                    dislike_count = parseInt(result["count"])
+                    document.getElementById(`dislike_count_${id}`).innerHTML = ` ${dislike_count}`;
+                })
+            })
+
+        // If the post has already been disliked, remove the dislike from the post
+        } else {
+            // Using an API, change the post to remove the dislike and save it to the database
+            fetch(`/remove_dislike/${id}`)
+            .then(response => response.json())
+            .then(result => {
+
+                // Prints the results (if removing the dislike was successful) to the console
+                console.log(result);
+                document.getElementById(`dislike_${id}`).innerHTML = " Dislike";
+
+                // Using an API, determine the number of dislikes the post has to update the post's dislikes directly
+                fetch(`/dislike_count/${id}`)
+                .then(response => response.json())
+                .then(result => {
+                    dislike_count = parseInt(result["count"])
+                    document.getElementById(`dislike_count_${id}`).innerHTML = ` ${dislike_count}`;
+                })
+            })
+        }
+    })
+}
