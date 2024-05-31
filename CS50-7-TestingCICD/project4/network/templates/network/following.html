@@ -7,7 +7,7 @@
     {% for post in page_posts %}
         <div class="px-4 py-2">
             <div class="card">
-                <h5 class="card-header bg-brown pt-2 pb-2"><a class="blacklink" href="{% url 'profile' user_id=post.user.id %}">{{ post.user.username | capfirst }}</a></h5>
+                <h5 class="card-header bg-brown pt-2 pb-2"><a class="brownlink" href="{% url 'profile' user_id=post.user.id %}">{{ post.user.username | capfirst }}</a></h5>
                 <div class="card-body">
                     <p class="card-text mt-0 mb-2" id="content_{{ post.id }}">{{ post.content }}</p>
                     <p class="card-text grey mt-2 mb-1"><i>{{ post.date_time }}</i></p>
