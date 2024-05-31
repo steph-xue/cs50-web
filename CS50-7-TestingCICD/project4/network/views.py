@@ -158,6 +158,7 @@ def profile(request, user_id):
     })
 
 
+@login_required
 # Allows the user to follow the profile
 def follow(request):
 
@@ -178,6 +179,7 @@ def follow(request):
     return HttpResponseRedirect(reverse("profile", kwargs={'user_id': user_id}))
 
 
+@login_required
 # Allows the user to unfollow the profile
 def unfollow(request):
 
@@ -195,6 +197,7 @@ def unfollow(request):
     return HttpResponseRedirect(reverse("profile", kwargs={'user_id': user_id}))
 
 
+@login_required
 # Directs the user to the following page to view posts from only users they follow
 def following(request):
 
@@ -224,6 +227,7 @@ def following(request):
     })
 
 
+@login_required
 # Allows the user to edit a post
 def edit(request, post_id):
 
