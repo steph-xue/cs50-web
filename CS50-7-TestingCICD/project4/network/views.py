@@ -1,10 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
+import json
 
 from .models import User, Post, Follow
 
@@ -221,3 +222,21 @@ def following(request):
     return render(request, "network/following.html", {
         "page_posts": page_posts
     })
+
+
+# Allows the user to edit a post
+def edit(request, post_id):
+
+    # POST - Allows user to edit and save the edits to the database
+    if request.method == "POST":
+
+        # Gets the json data posted to the backend
+        data = json.loads(request.body)
+
+        # Gets the post to edit and saves the edits to the database
+        post = Post.objects.get(pk=post_id)
+        post.content = data["content"]
+        post.save()
+        
+        # Returns a json response to the use to tell them if the edit was successful
+        return JsonResponse({"message": "Edit saved successfully", "data": data["content"]})

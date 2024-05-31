@@ -9,7 +9,7 @@
             <div class="card">
                 <h5 class="card-header bg-brown"><a class="blacklink" href="{% url 'profile' user_id=post.user.id %}">{{ post.user.username | capfirst }}</a></h5>
                 <div class="card-body">
-                    <p class="card-text">{{ post.content }}</p>
+                    <p class="card-text" id="content_{{ post.id }}">{{ post.content }}</p>
                     <p class="card-text"><i>{{ post.date_time }}</i></p>
                 </div>
                 {% if user.is_authenticated %}
@@ -28,12 +28,12 @@
                                 </div>
                                 <div class="modal-body">
                                     <h4 class="pb-2">{{ post.user.username | capfirst }}</h4>
-                                    <textarea class="form-control" name="content" rows="10">{{ post.content }}</textarea>
+                                    <textarea class="form-control" name="content" rows="10" id="post_content_{{ post.id }}">{{ post.content }}</textarea>
                                     <p class="pt-2"><i>{{ post.date_time }}</i></p>
                                 </div>
                                 <div class="modal-footer">
                                 <button type="button" class="btn btn-brown" data-dismiss="modal" id="close_button">Close</button>
-                                <button type="button" class="btn btn-brown" id="save_changes_button">Save Changes</button>
+                                <button type="button" class="btn btn-brown" id="save_changes_button" onclick="edit({{ post.id }})" data-dismiss="modal">Save Changes</button>
                                 </div>
                             </div>
                             </div>
