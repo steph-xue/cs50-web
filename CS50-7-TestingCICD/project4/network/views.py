@@ -21,9 +21,12 @@ def index(request):
 
     # Create a list of all the post id's you've liked
     your_liked_post_ids = []
-    for like in all_likes:
-        if like.user == request.user:
-            your_liked_post_ids.append(like.post.id)
+    try:
+        for like in all_likes:
+            if like.user.id == request.user.id:
+                your_liked_post_ids.append(like.post.id)
+    except:
+        your_liked_post_ids = []
 
     # Pagination - determines which page to show and only allow maximum 10 posts to be displayed on each page
     paginator = Paginator(all_posts, 10)
@@ -258,18 +261,18 @@ def edit(request, post_id):
 
 @login_required
 # Allows the user like a post
-def like(request, post_id):
+def add_like(request, post_id):
 
     # Gets the current user and the post they liked
     current_user = request.user
     post = Post.objects.get(pk=post_id)
 
     # Creates and saves a like object for the user and the post they liked
-    like = Like(
+    new_like = Like(
         post=post,
         user=current_user
     )
-    like.save()
+    new_like.save()
 
     # Returns a json response to the use to tell them if adding the like was successful
     return JsonResponse({"message": "Like added successfully"})

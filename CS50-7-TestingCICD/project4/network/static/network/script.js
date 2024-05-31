@@ -1,3 +1,8 @@
+// Waits for the entire document to load before running any events
+document.addEventListener('DOMContentLoaded', function() {
+    load()
+})
+
 // Allows to retrieve cookies
 function get_cookie(name) {
     const value = `; ${document.cookie}`;
@@ -32,7 +37,7 @@ function edit(id) {
 }
 
 
-// Allows the user to like or remove a like from a post
+// Allows the user to add or remove a like from a post
 function like_handler(id, your_liked_post_ids) {
 
     // Get the like button to change and clear it out
@@ -40,17 +45,13 @@ function like_handler(id, your_liked_post_ids) {
     btn.innerHTML = "";
 
     // Checks if the user has liked the post
-    if (your_liked_post_ids.indexOf < 0) {
-        let liked = false;
-    } else {
-        let liked = true;
-    }
+    let liked = your_liked_post_ids.indexOf(id) >= 0;
 
     // If the post has not yet been liked, like the post
-    if (liked == false) {
+    if (!liked) {
 
         // Using an API, change the post to add a like and save it to the database
-        fetch(`/like/${id}`)
+        fetch(`/add_like/${id}`)
         .then(response => response.json())
         .then(result => {
 
@@ -58,7 +59,7 @@ function like_handler(id, your_liked_post_ids) {
             console.log(result);
             btn.innerHTML = " Remove Like";
         })
-    
+
     // If the post has already been liked, remove the like from the post
     } else {
         // Using an API, change the post to remove the like and save it to the database
@@ -73,8 +74,7 @@ function like_handler(id, your_liked_post_ids) {
     }
 
     // After adding/removing the like, change the variable liked accordingly
-    liked = !liked
-    
-}
+    liked = !liked;
 
+}
 

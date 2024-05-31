@@ -13,10 +13,10 @@
                     <p class="card-text grey mt-2 mb-1"><i>{{ post.date_time }}</i></p>
                     <div class="row pl-3 mt-2">
                         <div class="pr-4">
-                            <i class="fa fa-thumbs-up" style="font-size:18px"></i> 1
+                            <i class="fa fa-thumbs-up" style="font-size:18px"></i> {{ post.like_post.count }}
                         </div>
                         <div>
-                            <i class="fa fa-thumbs-down" style="font-size:18px"></i> 1
+                            <i class="fa fa-thumbs-down" style="font-size:18px"></i> 0
                         </div>
                     </div>
                 </div>
@@ -60,7 +60,6 @@
                                 </button>
                             </div>
                         {% endif %}
- 
                     {% endif %}
                 {% endif %}
             </div>
