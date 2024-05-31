@@ -6,6 +6,14 @@
     background-color: #dec7b2 !important;
 }
 
+.btn-like {
+    background-color: #c8d6c4 !important;
+}
+
+.btn-like:hover {
+    background-color: #b3cbac !important;
+}
+
 .brownlink {
     color: #8a5626 !important;
 }
@@ -36,4 +44,8 @@
 .adjust {
     margin-top: -5px;
     margin-bottom: 5px;
+}
+
+.grey {
+    color: grey !important;
 }

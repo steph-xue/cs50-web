@@ -10,7 +10,7 @@
                 <h5 class="card-header bg-brown"><a class="blacklink" href="{% url 'profile' user_id=post.user.id %}">{{ post.user.username | capfirst }}</a></h5>
                 <div class="card-body">
                     <p class="card-text" id="content_{{ post.id }}">{{ post.content }}</p>
-                    <p class="card-text"><i>{{ post.date_time }}</i></p>
+                    <p class="card-text grey"><i>{{ post.date_time }}</i></p>
                 </div>
                 {% if user.is_authenticated %}
                     {% if user == post.user %}
