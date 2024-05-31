@@ -16,6 +16,15 @@ def index(request):
     # Gets all posts ordered in reverse chronological order
     all_posts = Post.objects.all().order_by("id").reverse()
 
+    # Gets all Like objects
+    all_likes = Like.objects.all()
+
+    # Create a list of all the post id's you've liked
+    your_liked_post_ids = []
+    for like in all_likes:
+        if like.user == request.user:
+            your_liked_post_ids.append(like.post.id)
+
     # Pagination - determines which page to show and only allow maximum 10 posts to be displayed on each page
     paginator = Paginator(all_posts, 10)
     page_number = request.GET.get("page")
@@ -23,7 +32,8 @@ def index(request):
 
     # Directs user to the homepage with all posts ordered in reverse chronological order
     return render(request, "network/index.html", {
-        "page_posts": page_posts
+        "page_posts": page_posts,
+        "your_liked_post_ids": your_liked_post_ids
     })
 
 
@@ -244,3 +254,38 @@ def edit(request, post_id):
         
         # Returns a json response to the use to tell them if the edit was successful
         return JsonResponse({"message": "Edit saved successfully", "data": data["content"]})
+    
+
+@login_required
+# Allows the user like a post
+def like(request, post_id):
+
+    # Gets the current user and the post they liked
+    current_user = request.user
+    post = Post.objects.get(pk=post_id)
+
+    # Creates and saves a like object for the user and the post they liked
+    like = Like(
+        post=post,
+        user=current_user
+    )
+    like.save()
+
+    # Returns a json response to the use to tell them if adding the like was successful
+    return JsonResponse({"message": "Like added successfully"})
+
+
+@login_required
+# Allows the user remove a like from a post
+def remove_like(request, post_id):
+    
+    # Gets the current user and the post to remove the like from
+    current_user = request.user
+    post = Post.objects.get(pk=post_id)
+
+    # Deletes the like object for the user and the post they previously liked
+    like = Like.objects.get(post=post, user=current_user)
+    like.delete()
+
+    # Returns a json response to the use to tell them if removing the like was successful
+    return JsonResponse({"message": "Like removed successfully"})

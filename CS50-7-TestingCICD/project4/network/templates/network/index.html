@@ -27,34 +27,40 @@
                         </div>
                         <div class="modal fade" id="edit_modal" tabindex="-1" role="dialog" aria-labelledby="edit_modalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Edit Post</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit Post</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h4 class="pb-2">{{ post.user.username | capfirst }}</h4>
+                                        <textarea class="form-control" name="content" rows="10" id="post_content_{{ post.id }}">{{ post.content }}</textarea>
+                                        <p class="pt-2"><i>{{ post.date_time }}</i></p>
+                                    </div>
+                                    <div class="modal-footer">
+                                    <button type="button" class="btn btn-brown" data-dismiss="modal" id="close_button">Close</button>
+                                    <button type="button" class="btn btn-brown" id="save_changes_button" onclick="edit({{ post.id }})" data-dismiss="modal">Save Changes</button>
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-                                    <h4 class="pb-2">{{ post.user.username | capfirst }}</h4>
-                                    <textarea class="form-control" name="content" rows="10" id="post_content_{{ post.id }}">{{ post.content }}</textarea>
-                                    <p class="pt-2"><i>{{ post.date_time }}</i></p>
-                                </div>
-                                <div class="modal-footer">
-                                <button type="button" class="btn btn-brown" data-dismiss="modal" id="close_button">Close</button>
-                                <button type="button" class="btn btn-brown" id="save_changes_button" onclick="edit({{ post.id }})" data-dismiss="modal">Save Changes</button>
-                                </div>
-                            </div>
                             </div>
                         </div>
                     {% else %}
-                        <div class="row d-flex justify-content-aroud pl-4 pb-2">
-                            <button type="button" class="btn btn-like mr-2">
-                                <i class="fa fa-thumbs-up" style="font-size:18px"></i> Like
-                            </button>
-                            <button type="button" class="btn btn-dislike">
-                                <i class="fa fa-thumbs-down" style="font-size:18px"></i> Dislike
-                            </button>
-                        </div>
+                        {% if post.id in your_liked_post_ids %}
+                            <div class="row d-flex justify-content-aroud pl-4 pb-2">
+                                <button type="button" class="btn btn-like mr-2" onclick="like_handler({{ post.id }}, {{ your_liked_post_ids }})" id="{{ post.id }}">
+                                    <i class="fa fa-thumbs-up" style="font-size:18px"></i> Remove Like
+                                </button>
+                            </div>
+                        {% else %}
+                            <div class="row d-flex justify-content-aroud pl-4 pb-2"m>
+                                <button type="button" class="btn btn-like mr-2" onclick="like_handler({{ post.id }}, {{ your_liked_post_ids }})" id="{{ post.id }}">
+                                    <i class="fa fa-thumbs-up" style="font-size:18px"></i> Like
+                                </button>
+                            </div>
+                        {% endif %}
+ 
                     {% endif %}
                 {% endif %}
             </div>
